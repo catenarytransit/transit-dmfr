@@ -1,5 +1,5 @@
 [package]
-name = "transit-dmfr"
+name = "dmfr"
 version = "0.1.0"
 edition = "2021"
 
