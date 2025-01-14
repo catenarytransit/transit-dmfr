@@ -1,6 +1,6 @@
 [package]
 name = "dmfr"
-version = "0.1.1"
+version = "0.1.2"
 description = "Transitland compatible Distributed Mobility Feed Registry schema"
 license = "AGPL-3.0"
 edition = "2021"
