@@ -262,13 +262,13 @@ impl From<&FeedUrlsGbfsAutoDiscovery> for FeedUrlsGbfsAutoDiscovery {
 impl std::str::FromStr for FeedUrlsGbfsAutoDiscovery {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -324,13 +324,13 @@ impl From<&FeedUrlsMdsProvider> for FeedUrlsMdsProvider {
 impl std::str::FromStr for FeedUrlsMdsProvider {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -386,13 +386,13 @@ impl From<&FeedUrlsRealtimeAlerts> for FeedUrlsRealtimeAlerts {
 impl std::str::FromStr for FeedUrlsRealtimeAlerts {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -448,13 +448,13 @@ impl From<&FeedUrlsRealtimeTripUpdates> for FeedUrlsRealtimeTripUpdates {
 impl std::str::FromStr for FeedUrlsRealtimeTripUpdates {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -510,13 +510,13 @@ impl From<&FeedUrlsRealtimeVehiclePositions> for FeedUrlsRealtimeVehiclePosition
 impl std::str::FromStr for FeedUrlsRealtimeVehiclePositions {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -572,13 +572,13 @@ impl From<&FeedUrlsStaticCurrent> for FeedUrlsStaticCurrent {
 impl std::str::FromStr for FeedUrlsStaticCurrent {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -634,13 +634,13 @@ impl From<&FeedUrlsStaticHistoricItem> for FeedUrlsStaticHistoricItem {
 impl std::str::FromStr for FeedUrlsStaticHistoricItem {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -696,13 +696,13 @@ impl From<&FeedUrlsStaticHypotheticalItem> for FeedUrlsStaticHypotheticalItem {
 impl std::str::FromStr for FeedUrlsStaticHypotheticalItem {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -758,13 +758,13 @@ impl From<&FeedUrlsStaticPlannedItem> for FeedUrlsStaticPlannedItem {
 impl std::str::FromStr for FeedUrlsStaticPlannedItem {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
@@ -1210,13 +1210,13 @@ impl From<&OperatorWebsite> for OperatorWebsite {
 impl std::str::FromStr for OperatorWebsite {
     type Err = &'static str;
     fn from_str(value: &str) -> Result<Self, &'static str> {
-        if regress::Regex::new("^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$")
+        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
             return Err(
-                "doesn't match pattern \"^(http|https|ftp)://[a-zA-Z0-9.,~#{}():&/%='?_/-]+$\"",
+                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
             );
         }
         Ok(Self(value.to_string()))
