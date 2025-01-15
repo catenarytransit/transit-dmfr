@@ -3,6 +3,8 @@
 #![allow(clippy::match_single_binding)]
 #![allow(clippy::clone_on_copy)]
 
+const URL_REGEX : &str = r#"\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))"#;
+
 #[doc = r" Error types."]
 pub mod error {
     #[doc = r" Error from a TryFrom or FromStr implementation."]
@@ -649,7 +651,7 @@ impl ::std::convert::From<&FeedUrlsGbfsAutoDiscovery> for FeedUrlsGbfsAutoDiscov
 impl ::std::str::FromStr for FeedUrlsGbfsAutoDiscovery {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -727,7 +729,7 @@ impl ::std::convert::From<&FeedUrlsMdsProvider> for FeedUrlsMdsProvider {
 impl ::std::str::FromStr for FeedUrlsMdsProvider {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -805,7 +807,7 @@ impl ::std::convert::From<&FeedUrlsRealtimeAlerts> for FeedUrlsRealtimeAlerts {
 impl ::std::str::FromStr for FeedUrlsRealtimeAlerts {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -883,7 +885,7 @@ impl ::std::convert::From<&FeedUrlsRealtimeTripUpdates> for FeedUrlsRealtimeTrip
 impl ::std::str::FromStr for FeedUrlsRealtimeTripUpdates {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -961,7 +963,7 @@ impl ::std::convert::From<&FeedUrlsRealtimeVehiclePositions> for FeedUrlsRealtim
 impl ::std::str::FromStr for FeedUrlsRealtimeVehiclePositions {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -1039,7 +1041,7 @@ impl ::std::convert::From<&FeedUrlsStaticCurrent> for FeedUrlsStaticCurrent {
 impl ::std::str::FromStr for FeedUrlsStaticCurrent {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -1117,7 +1119,7 @@ impl ::std::convert::From<&FeedUrlsStaticHistoricItem> for FeedUrlsStaticHistori
 impl ::std::str::FromStr for FeedUrlsStaticHistoricItem {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -1195,7 +1197,7 @@ impl ::std::convert::From<&FeedUrlsStaticHypotheticalItem> for FeedUrlsStaticHyp
 impl ::std::str::FromStr for FeedUrlsStaticHypotheticalItem {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -1273,7 +1275,7 @@ impl ::std::convert::From<&FeedUrlsStaticPlannedItem> for FeedUrlsStaticPlannedI
 impl ::std::str::FromStr for FeedUrlsStaticPlannedItem {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -2097,7 +2099,7 @@ impl ::std::convert::From<&OperatorWebsite> for OperatorWebsite {
 impl ::std::str::FromStr for OperatorWebsite {
     type Err = self::error::ConversionError;
     fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
-        if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
+        if regress::Regex::new(URL_REGEX)
             .unwrap()
             .find(value)
             .is_none()
@@ -5883,5 +5885,28 @@ pub mod builder {
                 gtfs_agency_id: Ok(value.gtfs_agency_id),
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let regresser = regress::Regex::new(URL_REGEX).unwrap();
+
+        let find = regresser
+        .find("https://data.trilliumtransit.com/gtfs/caltrain-ca-us/caltrain-ca-us.zip");
+
+        assert!(find.is_some());
+
+        println!("{:?}", find);
+
+        let find_ftp = regresser.find("ftp://ftp.geo.euskadi.net/cartografia/transporTe/moveuskadi/bizkaibus/学中文");
+
+        assert!(find_ftp.is_some());
+
+        println!("FTP test: {:?}", find_ftp);
     }
 }
