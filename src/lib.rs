@@ -145,7 +145,7 @@ impl ::std::fmt::Display for AuthorizationType {
 }
 impl ::std::str::FromStr for AuthorizationType {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "header" => Ok(Self::Header),
             "basic_auth" => Ok(Self::BasicAuth),
@@ -158,7 +158,7 @@ impl ::std::str::FromStr for AuthorizationType {
 }
 impl ::std::convert::TryFrom<&str> for AuthorizationType {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -166,7 +166,7 @@ impl ::std::convert::TryFrom<&String> for AuthorizationType {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -174,7 +174,7 @@ impl ::std::convert::TryFrom<String> for AuthorizationType {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -465,7 +465,7 @@ impl ::std::fmt::Display for FeedSpec {
 }
 impl ::std::str::FromStr for FeedSpec {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "gtfs" => Ok(Self::Gtfs),
             "gtfs-rt" => Ok(Self::GtfsRt),
@@ -477,7 +477,7 @@ impl ::std::str::FromStr for FeedSpec {
 }
 impl ::std::convert::TryFrom<&str> for FeedSpec {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -485,7 +485,7 @@ impl ::std::convert::TryFrom<&String> for FeedSpec {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -493,7 +493,7 @@ impl ::std::convert::TryFrom<String> for FeedSpec {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -648,7 +648,7 @@ impl ::std::convert::From<&FeedUrlsGbfsAutoDiscovery> for FeedUrlsGbfsAutoDiscov
 }
 impl ::std::str::FromStr for FeedUrlsGbfsAutoDiscovery {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -661,7 +661,7 @@ impl ::std::str::FromStr for FeedUrlsGbfsAutoDiscovery {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsGbfsAutoDiscovery {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -669,7 +669,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsGbfsAutoDiscovery {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -677,12 +677,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsGbfsAutoDiscovery {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsGbfsAutoDiscovery {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -726,7 +726,7 @@ impl ::std::convert::From<&FeedUrlsMdsProvider> for FeedUrlsMdsProvider {
 }
 impl ::std::str::FromStr for FeedUrlsMdsProvider {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -739,7 +739,7 @@ impl ::std::str::FromStr for FeedUrlsMdsProvider {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsMdsProvider {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -747,7 +747,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsMdsProvider {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -755,12 +755,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsMdsProvider {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsMdsProvider {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -804,7 +804,7 @@ impl ::std::convert::From<&FeedUrlsRealtimeAlerts> for FeedUrlsRealtimeAlerts {
 }
 impl ::std::str::FromStr for FeedUrlsRealtimeAlerts {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -817,7 +817,7 @@ impl ::std::str::FromStr for FeedUrlsRealtimeAlerts {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsRealtimeAlerts {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -825,7 +825,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsRealtimeAlerts {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -833,12 +833,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsRealtimeAlerts {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsRealtimeAlerts {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -882,7 +882,7 @@ impl ::std::convert::From<&FeedUrlsRealtimeTripUpdates> for FeedUrlsRealtimeTrip
 }
 impl ::std::str::FromStr for FeedUrlsRealtimeTripUpdates {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -895,7 +895,7 @@ impl ::std::str::FromStr for FeedUrlsRealtimeTripUpdates {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsRealtimeTripUpdates {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -903,7 +903,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsRealtimeTripUpdates {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -911,12 +911,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsRealtimeTripUpdates {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsRealtimeTripUpdates {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -960,7 +960,7 @@ impl ::std::convert::From<&FeedUrlsRealtimeVehiclePositions> for FeedUrlsRealtim
 }
 impl ::std::str::FromStr for FeedUrlsRealtimeVehiclePositions {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -973,7 +973,7 @@ impl ::std::str::FromStr for FeedUrlsRealtimeVehiclePositions {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsRealtimeVehiclePositions {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -981,7 +981,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsRealtimeVehiclePositions {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -989,12 +989,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsRealtimeVehiclePositions {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsRealtimeVehiclePositions {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -1038,7 +1038,7 @@ impl ::std::convert::From<&FeedUrlsStaticCurrent> for FeedUrlsStaticCurrent {
 }
 impl ::std::str::FromStr for FeedUrlsStaticCurrent {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -1051,7 +1051,7 @@ impl ::std::str::FromStr for FeedUrlsStaticCurrent {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsStaticCurrent {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1059,7 +1059,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsStaticCurrent {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1067,12 +1067,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsStaticCurrent {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsStaticCurrent {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -1116,7 +1116,7 @@ impl ::std::convert::From<&FeedUrlsStaticHistoricItem> for FeedUrlsStaticHistori
 }
 impl ::std::str::FromStr for FeedUrlsStaticHistoricItem {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -1129,7 +1129,7 @@ impl ::std::str::FromStr for FeedUrlsStaticHistoricItem {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsStaticHistoricItem {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1137,7 +1137,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsStaticHistoricItem {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1145,12 +1145,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsStaticHistoricItem {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsStaticHistoricItem {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -1194,7 +1194,7 @@ impl ::std::convert::From<&FeedUrlsStaticHypotheticalItem> for FeedUrlsStaticHyp
 }
 impl ::std::str::FromStr for FeedUrlsStaticHypotheticalItem {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -1207,7 +1207,7 @@ impl ::std::str::FromStr for FeedUrlsStaticHypotheticalItem {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsStaticHypotheticalItem {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1215,7 +1215,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsStaticHypotheticalItem {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1223,12 +1223,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsStaticHypotheticalItem {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsStaticHypotheticalItem {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -1272,7 +1272,7 @@ impl ::std::convert::From<&FeedUrlsStaticPlannedItem> for FeedUrlsStaticPlannedI
 }
 impl ::std::str::FromStr for FeedUrlsStaticPlannedItem {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -1285,7 +1285,7 @@ impl ::std::str::FromStr for FeedUrlsStaticPlannedItem {
 }
 impl ::std::convert::TryFrom<&str> for FeedUrlsStaticPlannedItem {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1293,7 +1293,7 @@ impl ::std::convert::TryFrom<&String> for FeedUrlsStaticPlannedItem {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1301,12 +1301,12 @@ impl ::std::convert::TryFrom<String> for FeedUrlsStaticPlannedItem {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for FeedUrlsStaticPlannedItem {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -1364,7 +1364,7 @@ impl ::std::convert::From<String> for Language {
 }
 impl ::std::str::FromStr for Language {
     type Err = ::std::convert::Infallible;
-    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
         Ok(Self(value.to_string()))
     }
 }
@@ -1558,7 +1558,7 @@ impl ::std::fmt::Display for LicenseDescriptionCommercialUseAllowed {
 }
 impl ::std::str::FromStr for LicenseDescriptionCommercialUseAllowed {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
@@ -1569,7 +1569,7 @@ impl ::std::str::FromStr for LicenseDescriptionCommercialUseAllowed {
 }
 impl ::std::convert::TryFrom<&str> for LicenseDescriptionCommercialUseAllowed {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1577,7 +1577,7 @@ impl ::std::convert::TryFrom<&String> for LicenseDescriptionCommercialUseAllowed
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1585,7 +1585,7 @@ impl ::std::convert::TryFrom<String> for LicenseDescriptionCommercialUseAllowed 
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1641,7 +1641,7 @@ impl ::std::fmt::Display for LicenseDescriptionCreateDerivedProduct {
 }
 impl ::std::str::FromStr for LicenseDescriptionCreateDerivedProduct {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
@@ -1652,7 +1652,7 @@ impl ::std::str::FromStr for LicenseDescriptionCreateDerivedProduct {
 }
 impl ::std::convert::TryFrom<&str> for LicenseDescriptionCreateDerivedProduct {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1660,7 +1660,7 @@ impl ::std::convert::TryFrom<&String> for LicenseDescriptionCreateDerivedProduct
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1668,7 +1668,7 @@ impl ::std::convert::TryFrom<String> for LicenseDescriptionCreateDerivedProduct 
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1724,7 +1724,7 @@ impl ::std::fmt::Display for LicenseDescriptionRedistributionAllowed {
 }
 impl ::std::str::FromStr for LicenseDescriptionRedistributionAllowed {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
@@ -1735,7 +1735,7 @@ impl ::std::str::FromStr for LicenseDescriptionRedistributionAllowed {
 }
 impl ::std::convert::TryFrom<&str> for LicenseDescriptionRedistributionAllowed {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1743,7 +1743,7 @@ impl ::std::convert::TryFrom<&String> for LicenseDescriptionRedistributionAllowe
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1751,7 +1751,7 @@ impl ::std::convert::TryFrom<String> for LicenseDescriptionRedistributionAllowed
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1807,7 +1807,7 @@ impl ::std::fmt::Display for LicenseDescriptionShareAlikeOptional {
 }
 impl ::std::str::FromStr for LicenseDescriptionShareAlikeOptional {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
@@ -1818,7 +1818,7 @@ impl ::std::str::FromStr for LicenseDescriptionShareAlikeOptional {
 }
 impl ::std::convert::TryFrom<&str> for LicenseDescriptionShareAlikeOptional {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1826,7 +1826,7 @@ impl ::std::convert::TryFrom<&String> for LicenseDescriptionShareAlikeOptional {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1834,7 +1834,7 @@ impl ::std::convert::TryFrom<String> for LicenseDescriptionShareAlikeOptional {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1890,7 +1890,7 @@ impl ::std::fmt::Display for LicenseDescriptionUseWithoutAttribution {
 }
 impl ::std::str::FromStr for LicenseDescriptionUseWithoutAttribution {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
@@ -1901,7 +1901,7 @@ impl ::std::str::FromStr for LicenseDescriptionUseWithoutAttribution {
 }
 impl ::std::convert::TryFrom<&str> for LicenseDescriptionUseWithoutAttribution {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1909,7 +1909,7 @@ impl ::std::convert::TryFrom<&String> for LicenseDescriptionUseWithoutAttributio
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1917,7 +1917,7 @@ impl ::std::convert::TryFrom<String> for LicenseDescriptionUseWithoutAttribution
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -1939,9 +1939,12 @@ impl ::std::convert::TryFrom<String> for LicenseDescriptionUseWithoutAttribution
 #[doc = "      \"items\": {"]
 #[doc = "        \"type\": \"object\","]
 #[doc = "        \"properties\": {"]
-#[doc = "          \"feed_onestop_id\": {},"]
+#[doc = "          \"feed_onestop_id\": {"]
+#[doc = "            \"description\": \"Feed id\","]
+#[doc = "            \"type\": \"string\""]
+#[doc = "          },"]
 #[doc = "          \"gtfs_agency_id\": {"]
-#[doc = "            \"description\": \"ID from the \","]
+#[doc = "            \"description\": \"ID from the agency.txt\","]
 #[doc = "            \"type\": \"string\""]
 #[doc = "          }"]
 #[doc = "        }"]
@@ -2021,9 +2024,12 @@ impl Operator {
 #[doc = "{"]
 #[doc = "  \"type\": \"object\","]
 #[doc = "  \"properties\": {"]
-#[doc = "    \"feed_onestop_id\": {},"]
+#[doc = "    \"feed_onestop_id\": {"]
+#[doc = "      \"description\": \"Feed id\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
 #[doc = "    \"gtfs_agency_id\": {"]
-#[doc = "      \"description\": \"ID from the \","]
+#[doc = "      \"description\": \"ID from the agency.txt\","]
 #[doc = "      \"type\": \"string\""]
 #[doc = "    }"]
 #[doc = "  }"]
@@ -2032,9 +2038,10 @@ impl Operator {
 #[doc = r" </details>"]
 #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OperatorAssociatedFeedsItem {
+    #[doc = "Feed id"]
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub feed_onestop_id: Option<::serde_json::Value>,
-    #[doc = "ID from the "]
+    pub feed_onestop_id: Option<String>,
+    #[doc = "ID from the agency.txt"]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gtfs_agency_id: Option<String>,
 }
@@ -2089,7 +2096,7 @@ impl ::std::convert::From<&OperatorWebsite> for OperatorWebsite {
 }
 impl ::std::str::FromStr for OperatorWebsite {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
@@ -2102,7 +2109,7 @@ impl ::std::str::FromStr for OperatorWebsite {
 }
 impl ::std::convert::TryFrom<&str> for OperatorWebsite {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -2110,7 +2117,7 @@ impl ::std::convert::TryFrom<&String> for OperatorWebsite {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -2118,12 +2125,12 @@ impl ::std::convert::TryFrom<String> for OperatorWebsite {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 impl<'de> ::serde::Deserialize<'de> for OperatorWebsite {
-    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::serde::Deserializer<'de>,
     {
@@ -4341,7 +4348,7 @@ impl ::std::fmt::Display for SpdxLicenseIds {
 }
 impl ::std::str::FromStr for SpdxLicenseIds {
     type Err = self::error::ConversionError;
-    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn from_str(value: &str) -> Result<Self, self::error::ConversionError> {
         match value {
             "0BSD" => Ok(Self::_0bsd),
             "AAL" => Ok(Self::Aal),
@@ -4906,7 +4913,7 @@ impl ::std::str::FromStr for SpdxLicenseIds {
 }
 impl ::std::convert::TryFrom<&str> for SpdxLicenseIds {
     type Error = self::error::ConversionError;
-    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
+    fn try_from(value: &str) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -4914,7 +4921,7 @@ impl ::std::convert::TryFrom<&String> for SpdxLicenseIds {
     type Error = self::error::ConversionError;
     fn try_from(
         value: &String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -4922,7 +4929,7 @@ impl ::std::convert::TryFrom<String> for SpdxLicenseIds {
     type Error = self::error::ConversionError;
     fn try_from(
         value: String,
-    ) -> ::std::result::Result<Self, self::error::ConversionError> {
+    ) -> Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
@@ -4930,15 +4937,15 @@ impl ::std::convert::TryFrom<String> for SpdxLicenseIds {
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct Authorization {
-        info_url: ::std::result::Result<
+        info_url: Result<
             Option<String>,
             String,
         >,
-        param_name: ::std::result::Result<
+        param_name: Result<
             Option<String>,
             String,
         >,
-        type_: ::std::result::Result<super::AuthorizationType, String>,
+        type_: Result<super::AuthorizationType, String>,
     }
     impl ::std::default::Default for Authorization {
         fn default() -> Self {
@@ -4985,7 +4992,7 @@ pub mod builder {
         type Error = super::error::ConversionError;
         fn try_from(
             value: Authorization,
-        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+        ) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 info_url: value.info_url?,
                 param_name: value.param_name?,
@@ -5004,12 +5011,12 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct DistributedMobilityFeedRegistry {
-        feeds: ::std::result::Result<::std::vec::Vec<super::Feed>, String>,
-        license_spdx_identifier: ::std::result::Result<
+        feeds: Result<::std::vec::Vec<super::Feed>, String>,
+        license_spdx_identifier: Result<
             Option<super::SpdxLicenseIds>,
             String,
         >,
-        operators: ::std::result::Result<::std::vec::Vec<super::Operator>, String>,
+        operators: Result<::std::vec::Vec<super::Operator>, String>,
     }
     impl ::std::default::Default for DistributedMobilityFeedRegistry {
         fn default() -> Self {
@@ -5061,7 +5068,7 @@ pub mod builder {
         type Error = super::error::ConversionError;
         fn try_from(
             value: DistributedMobilityFeedRegistry,
-        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+        ) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 feeds: value.feeds?,
                 license_spdx_identifier: value.license_spdx_identifier?,
@@ -5082,33 +5089,33 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct Feed {
-        authorization: ::std::result::Result<
+        authorization: Result<
             Option<super::Authorization>,
             String,
         >,
-        description: ::std::result::Result<
+        description: Result<
             Option<String>,
             String,
         >,
-        id: ::std::result::Result<String, String>,
-        languages: ::std::result::Result<::std::vec::Vec<super::Language>, String>,
-        license: ::std::result::Result<
+        id: Result<String, String>,
+        languages: Result<::std::vec::Vec<super::Language>, String>,
+        license: Result<
             Option<super::LicenseDescription>,
             String,
         >,
-        name: ::std::result::Result<
+        name: Result<
             Option<String>,
             String,
         >,
-        operators: ::std::result::Result<::std::vec::Vec<super::Operator>, String>,
-        spec: ::std::result::Result<super::FeedSpec, String>,
+        operators: Result<::std::vec::Vec<super::Operator>, String>,
+        spec: Result<super::FeedSpec, String>,
         supersedes_ids:
-            ::std::result::Result<::std::vec::Vec<String>, String>,
-        tags: ::std::result::Result<
+            Result<::std::vec::Vec<String>, String>,
+        tags: Result<
             ::serde_json::Map<String, ::serde_json::Value>,
             String,
         >,
-        urls: ::std::result::Result<super::FeedUrls, String>,
+        urls: Result<super::FeedUrls, String>,
     }
     impl ::std::default::Default for Feed {
         fn default() -> Self {
@@ -5243,7 +5250,7 @@ pub mod builder {
     }
     impl ::std::convert::TryFrom<Feed> for super::Feed {
         type Error = super::error::ConversionError;
-        fn try_from(value: Feed) -> ::std::result::Result<Self, super::error::ConversionError> {
+        fn try_from(value: Feed) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 authorization: value.authorization?,
                 description: value.description?,
@@ -5278,39 +5285,39 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct FeedUrls {
-        gbfs_auto_discovery: ::std::result::Result<
+        gbfs_auto_discovery: Result<
             Option<super::FeedUrlsGbfsAutoDiscovery>,
             String,
         >,
-        mds_provider: ::std::result::Result<
+        mds_provider: Result<
             Option<super::FeedUrlsMdsProvider>,
             String,
         >,
-        realtime_alerts: ::std::result::Result<
+        realtime_alerts: Result<
             Option<super::FeedUrlsRealtimeAlerts>,
             String,
         >,
-        realtime_trip_updates: ::std::result::Result<
+        realtime_trip_updates: Result<
             Option<super::FeedUrlsRealtimeTripUpdates>,
             String,
         >,
-        realtime_vehicle_positions: ::std::result::Result<
+        realtime_vehicle_positions: Result<
             Option<super::FeedUrlsRealtimeVehiclePositions>,
             String,
         >,
-        static_current: ::std::result::Result<
+        static_current: Result<
             Option<super::FeedUrlsStaticCurrent>,
             String,
         >,
-        static_historic: ::std::result::Result<
+        static_historic: Result<
             ::std::vec::Vec<super::FeedUrlsStaticHistoricItem>,
             String,
         >,
-        static_hypothetical: ::std::result::Result<
+        static_hypothetical: Result<
             ::std::vec::Vec<super::FeedUrlsStaticHypotheticalItem>,
             String,
         >,
-        static_planned: ::std::result::Result<
+        static_planned: Result<
             ::std::vec::Vec<super::FeedUrlsStaticPlannedItem>,
             String,
         >,
@@ -5438,7 +5445,7 @@ pub mod builder {
     }
     impl ::std::convert::TryFrom<FeedUrls> for super::FeedUrls {
         type Error = super::error::ConversionError;
-        fn try_from(value: FeedUrls) -> ::std::result::Result<Self, super::error::ConversionError> {
+        fn try_from(value: FeedUrls) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 gbfs_auto_discovery: value.gbfs_auto_discovery?,
                 mds_provider: value.mds_provider?,
@@ -5469,39 +5476,39 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct LicenseDescription {
-        attribution_instructions: ::std::result::Result<
+        attribution_instructions: Result<
             Option<String>,
             String,
         >,
-        attribution_text: ::std::result::Result<
+        attribution_text: Result<
             Option<String>,
             String,
         >,
-        commercial_use_allowed: ::std::result::Result<
+        commercial_use_allowed: Result<
             Option<super::LicenseDescriptionCommercialUseAllowed>,
             String,
         >,
-        create_derived_product: ::std::result::Result<
+        create_derived_product: Result<
             Option<super::LicenseDescriptionCreateDerivedProduct>,
             String,
         >,
-        redistribution_allowed: ::std::result::Result<
+        redistribution_allowed: Result<
             Option<super::LicenseDescriptionRedistributionAllowed>,
             String,
         >,
-        share_alike_optional: ::std::result::Result<
+        share_alike_optional: Result<
             Option<super::LicenseDescriptionShareAlikeOptional>,
             String,
         >,
-        spdx_identifier: ::std::result::Result<
+        spdx_identifier: Result<
             Option<super::SpdxLicenseIds>,
             String,
         >,
-        url: ::std::result::Result<
+        url: Result<
             Option<String>,
             String,
         >,
-        use_without_attribution: ::std::result::Result<
+        use_without_attribution: Result<
             Option<super::LicenseDescriptionUseWithoutAttribution>,
             String,
         >,
@@ -5648,7 +5655,7 @@ pub mod builder {
         type Error = super::error::ConversionError;
         fn try_from(
             value: LicenseDescription,
-        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+        ) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 attribution_instructions: value.attribution_instructions?,
                 attribution_text: value.attribution_text?,
@@ -5679,23 +5686,23 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct Operator {
-        associated_feeds: ::std::result::Result<
+        associated_feeds: Result<
             ::std::vec::Vec<super::OperatorAssociatedFeedsItem>,
             String,
         >,
-        name: ::std::result::Result<String, String>,
-        onestop_id: ::std::result::Result<String, String>,
-        short_name: ::std::result::Result<
+        name: Result<String, String>,
+        onestop_id: Result<String, String>,
+        short_name: Result<
             Option<String>,
             String,
         >,
         supersedes_ids:
-            ::std::result::Result<::std::vec::Vec<String>, String>,
-        tags: ::std::result::Result<
+            Result<::std::vec::Vec<String>, String>,
+        tags: Result<
             ::serde_json::Map<String, ::serde_json::Value>,
             String,
         >,
-        website: ::std::result::Result<
+        website: Result<
             Option<super::OperatorWebsite>,
             String,
         >,
@@ -5792,7 +5799,7 @@ pub mod builder {
     }
     impl ::std::convert::TryFrom<Operator> for super::Operator {
         type Error = super::error::ConversionError;
-        fn try_from(value: Operator) -> ::std::result::Result<Self, super::error::ConversionError> {
+        fn try_from(value: Operator) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 associated_feeds: value.associated_feeds?,
                 name: value.name?,
@@ -5819,11 +5826,11 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct OperatorAssociatedFeedsItem {
-        feed_onestop_id: ::std::result::Result<
-            Option<::serde_json::Value>,
+        feed_onestop_id: Result<
+            Option<String>,
             String,
         >,
-        gtfs_agency_id: ::std::result::Result<
+        gtfs_agency_id: Result<
             Option<String>,
             String,
         >,
@@ -5839,7 +5846,7 @@ pub mod builder {
     impl OperatorAssociatedFeedsItem {
         pub fn feed_onestop_id<T>(mut self, value: T) -> Self
         where
-            T: ::std::convert::TryInto<Option<::serde_json::Value>>,
+            T: ::std::convert::TryInto<Option<String>>,
             T::Error: ::std::fmt::Display,
         {
             self.feed_onestop_id = value
@@ -5862,7 +5869,7 @@ pub mod builder {
         type Error = super::error::ConversionError;
         fn try_from(
             value: OperatorAssociatedFeedsItem,
-        ) -> ::std::result::Result<Self, super::error::ConversionError> {
+        ) -> Result<Self, super::error::ConversionError> {
             Ok(Self {
                 feed_onestop_id: value.feed_onestop_id?,
                 gtfs_agency_id: value.gtfs_agency_id?,

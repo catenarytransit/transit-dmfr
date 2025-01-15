@@ -816,10 +816,11 @@
               "properties": {
                 "gtfs_agency_id": {
                   "type": "string",
-                  "description": "ID from the "
+                  "description": "ID from the agency.txt"
                 },
                 "feed_onestop_id": {
-  
+                  "type": "string",
+                  "description": "Feed id"
                 }
               }
             }
