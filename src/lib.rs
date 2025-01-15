@@ -3,9 +3,67 @@
 #![allow(clippy::match_single_binding)]
 #![allow(clippy::clone_on_copy)]
 
-use serde::{Deserialize, Serialize};
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[doc = r" Error types."]
+pub mod error {
+    #[doc = r" Error from a TryFrom or FromStr implementation."]
+    pub struct ConversionError(::std::borrow::Cow<'static, str>);
+    impl ::std::error::Error for ConversionError {}
+    impl ::std::fmt::Display for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Display::fmt(&self.0, f)
+        }
+    }
+    impl ::std::fmt::Debug for ConversionError {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> Result<(), ::std::fmt::Error> {
+            ::std::fmt::Debug::fmt(&self.0, f)
+        }
+    }
+    impl From<&'static str> for ConversionError {
+        fn from(value: &'static str) -> Self {
+            Self(value.into())
+        }
+    }
+    impl From<String> for ConversionError {
+        fn from(value: String) -> Self {
+            Self(value.into())
+        }
+    }
+}
+#[doc = "Authorization"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"required\": ["]
+#[doc = "    \"type\""]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"info_url\": {"]
+#[doc = "      \"description\": \"Website to visit to sign up for an account.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"param_name\": {"]
+#[doc = "      \"description\": \"When type=query_param, this specifies the name of the query parameter.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"type\": {"]
+#[doc = "      \"description\": \"Authorization approach: HTTP header, basic authentication, query parameter, or path segment in a Transitland Extended URL.\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"header\","]
+#[doc = "        \"basic_auth\","]
+#[doc = "        \"query_param\","]
+#[doc = "        \"path_segment\","]
+#[doc = "        \"replace_url\""]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct Authorization {
     #[doc = "Website to visit to sign up for an account."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -17,18 +75,46 @@ pub struct Authorization {
     #[serde(rename = "type")]
     pub type_: AuthorizationType,
 }
-impl From<&Authorization> for Authorization {
+impl ::std::convert::From<&Authorization> for Authorization {
     fn from(value: &Authorization) -> Self {
         value.clone()
     }
 }
 impl Authorization {
     pub fn builder() -> builder::Authorization {
-        builder::Authorization::default()
+        Default::default()
     }
 }
 #[doc = "Authorization approach: HTTP header, basic authentication, query parameter, or path segment in a Transitland Extended URL."]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"Authorization approach: HTTP header, basic authentication, query parameter, or path segment in a Transitland Extended URL.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"header\","]
+#[doc = "    \"basic_auth\","]
+#[doc = "    \"query_param\","]
+#[doc = "    \"path_segment\","]
+#[doc = "    \"replace_url\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 pub enum AuthorizationType {
     #[serde(rename = "header")]
     Header,
@@ -41,73 +127,249 @@ pub enum AuthorizationType {
     #[serde(rename = "replace_url")]
     ReplaceUrl,
 }
-impl From<&AuthorizationType> for AuthorizationType {
+impl ::std::convert::From<&Self> for AuthorizationType {
     fn from(value: &AuthorizationType) -> Self {
         value.clone()
     }
 }
-impl ToString for AuthorizationType {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for AuthorizationType {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Header => "header".to_string(),
-            Self::BasicAuth => "basic_auth".to_string(),
-            Self::QueryParam => "query_param".to_string(),
-            Self::PathSegment => "path_segment".to_string(),
-            Self::ReplaceUrl => "replace_url".to_string(),
+            Self::Header => write!(f, "header"),
+            Self::BasicAuth => write!(f, "basic_auth"),
+            Self::QueryParam => write!(f, "query_param"),
+            Self::PathSegment => write!(f, "path_segment"),
+            Self::ReplaceUrl => write!(f, "replace_url"),
         }
     }
 }
-impl std::str::FromStr for AuthorizationType {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for AuthorizationType {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "header" => Ok(Self::Header),
             "basic_auth" => Ok(Self::BasicAuth),
             "query_param" => Ok(Self::QueryParam),
             "path_segment" => Ok(Self::PathSegment),
             "replace_url" => Ok(Self::ReplaceUrl),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
-impl std::convert::TryFrom<&str> for AuthorizationType {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for AuthorizationType {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for AuthorizationType {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for AuthorizationType {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for AuthorizationType {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for AuthorizationType {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[doc = "DistributedMobilityFeedRegistry"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"$id\": \"https://dmfr.transit.land/json-schema/dmfr.schema-v0.5.1.json\","]
+#[doc = "  \"title\": \"Distributed Mobility Feed Registry\","]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"feeds\": {"]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"$ref\": \"#/definitions/feed\""]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    \"license_spdx_identifier\": {"]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"anyOf\": ["]
+#[doc = "        {"]
+#[doc = "          \"$ref\": \"#/definitions/spdxLicenseIds\""]
+#[doc = "        }"]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"operators\": {"]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"$ref\": \"#/definitions/operator\""]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct DistributedMobilityFeedRegistry {
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub feeds: Vec<Feed>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub feeds: ::std::vec::Vec<Feed>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub license_spdx_identifier: Option<SpdxLicenseIds>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub operators: Vec<Operator>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub operators: ::std::vec::Vec<Operator>,
 }
-impl From<&DistributedMobilityFeedRegistry> for DistributedMobilityFeedRegistry {
+impl ::std::convert::From<&DistributedMobilityFeedRegistry> for DistributedMobilityFeedRegistry {
     fn from(value: &DistributedMobilityFeedRegistry) -> Self {
         value.clone()
     }
 }
-impl DistributedMobilityFeedRegistry {
-    pub fn builder() -> builder::DistributedMobilityFeedRegistry {
-        builder::DistributedMobilityFeedRegistry::default()
+impl ::std::default::Default for DistributedMobilityFeedRegistry {
+    fn default() -> Self {
+        Self {
+            feeds: Default::default(),
+            license_spdx_identifier: Default::default(),
+            operators: Default::default(),
+        }
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+impl DistributedMobilityFeedRegistry {
+    pub fn builder() -> builder::DistributedMobilityFeedRegistry {
+        Default::default()
+    }
+}
+#[doc = "Feed"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"required\": ["]
+#[doc = "    \"id\","]
+#[doc = "    \"spec\","]
+#[doc = "    \"urls\""]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"authorization\": {"]
+#[doc = "      \"$ref\": \"#/definitions/authorization\""]
+#[doc = "    },"]
+#[doc = "    \"description\": {"]
+#[doc = "      \"description\": \"Optional text providing notes about the feed. May be shown to end-users. May be rendered as Markdown by some consuming applications.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"id\": {"]
+#[doc = "      \"description\": \"Identifier for this feed, internal to this DMFR instance. (Optionally can be a Onestop ID.)\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"languages\": {"]
+#[doc = "      \"description\": \"Language(s) included in this feed.\","]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"$ref\": \"#/definitions/language\""]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    \"license\": {"]
+#[doc = "      \"$ref\": \"#/definitions/license_description\""]
+#[doc = "    },"]
+#[doc = "    \"name\": {"]
+#[doc = "      \"description\": \"An optional name to describe the feed. May be shown to end-users.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"operators\": {"]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"$ref\": \"#/definitions/operator\""]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    \"spec\": {"]
+#[doc = "      \"description\": \"Type of data contained in this feed: GTFS, GTFS-RT, GBFS, or MDS.\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"gtfs\","]
+#[doc = "        \"gtfs-rt\","]
+#[doc = "        \"gbfs\","]
+#[doc = "        \"mds\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"supersedes_ids\": {"]
+#[doc = "      \"description\": \"One or more Onestop IDs for old feeds records that have since been merged into or taken over by this feed record.\","]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"type\": \"string\""]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    \"tags\": {"]
+#[doc = "      \"description\": \"Extended information about the feed, as well as fetch and import controls for the Transitland platform.\","]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    \"urls\": {"]
+#[doc = "      \"type\": \"object\","]
+#[doc = "      \"properties\": {"]
+#[doc = "        \"gbfs_auto_discovery\": {"]
+#[doc = "          \"description\": \"Auto-discovery file in JSON format that links to all of the other GBFS files published by the system.\","]
+#[doc = "          \"type\": \"string\","]
+#[doc = "          \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "        },"]
+#[doc = "        \"mds_provider\": {"]
+#[doc = "          \"description\": \"MDS provider API endpoints are intended to be implemented by mobility providers and consumed by regulatory agencies.\","]
+#[doc = "          \"type\": \"string\","]
+#[doc = "          \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "        },"]
+#[doc = "        \"realtime_alerts\": {"]
+#[doc = "          \"description\": \"URL for GTFS Realtime Alert messages.\","]
+#[doc = "          \"type\": \"string\","]
+#[doc = "          \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "        },"]
+#[doc = "        \"realtime_trip_updates\": {"]
+#[doc = "          \"description\": \"URL for GTFS Realtime TripUpdate messages.\","]
+#[doc = "          \"type\": \"string\","]
+#[doc = "          \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "        },"]
+#[doc = "        \"realtime_vehicle_positions\": {"]
+#[doc = "          \"description\": \"URL for GTFS Realtime VehiclePosition messages.\","]
+#[doc = "          \"type\": \"string\","]
+#[doc = "          \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "        },"]
+#[doc = "        \"static_current\": {"]
+#[doc = "          \"description\": \"URL (in Transitland Extended URL format) for the static feed that represents today's service. (Has the same meaning as url.)\","]
+#[doc = "          \"type\": \"string\","]
+#[doc = "          \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "        },"]
+#[doc = "        \"static_historic\": {"]
+#[doc = "          \"type\": \"array\","]
+#[doc = "          \"items\": {"]
+#[doc = "            \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent past service that is no longer in effect.\","]
+#[doc = "            \"type\": \"string\","]
+#[doc = "            \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "          }"]
+#[doc = "        },"]
+#[doc = "        \"static_hypothetical\": {"]
+#[doc = "          \"type\": \"array\","]
+#[doc = "          \"items\": {"]
+#[doc = "            \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent potential service or network changes. Typically used to represent scenarios that may (or may not) take effect months or years in the future.\","]
+#[doc = "            \"type\": \"string\","]
+#[doc = "            \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "          }"]
+#[doc = "        },"]
+#[doc = "        \"static_planned\": {"]
+#[doc = "          \"type\": \"array\","]
+#[doc = "          \"items\": {"]
+#[doc = "            \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent service planned for upcoming dates. Typically used to represent calendar/service changes that will take effect few weeks or months in the future.\","]
+#[doc = "            \"type\": \"string\","]
+#[doc = "            \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "          }"]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  },"]
+#[doc = "  \"additionalProperties\": false"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Feed {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -118,36 +380,64 @@ pub struct Feed {
     #[doc = "Identifier for this feed, internal to this DMFR instance. (Optionally can be a Onestop ID.)"]
     pub id: String,
     #[doc = "Language(s) included in this feed."]
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub languages: Vec<Language>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub languages: ::std::vec::Vec<Language>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub license: Option<LicenseDescription>,
     #[doc = "An optional name to describe the feed. May be shown to end-users."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub operators: Vec<Operator>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub operators: ::std::vec::Vec<Operator>,
     #[doc = "Type of data contained in this feed: GTFS, GTFS-RT, GBFS, or MDS."]
     pub spec: FeedSpec,
     #[doc = "One or more Onestop IDs for old feeds records that have since been merged into or taken over by this feed record."]
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub supersedes_ids: Vec<String>,
-    #[serde(default, skip_serializing_if = "serde_json::Map::is_empty")]
-    pub tags: serde_json::Map<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub supersedes_ids: ::std::vec::Vec<String>,
+    #[doc = "Extended information about the feed, as well as fetch and import controls for the Transitland platform."]
+    #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
+    pub tags: ::serde_json::Map<String, ::serde_json::Value>,
     pub urls: FeedUrls,
 }
-impl From<&Feed> for Feed {
+impl ::std::convert::From<&Feed> for Feed {
     fn from(value: &Feed) -> Self {
         value.clone()
     }
 }
 impl Feed {
     pub fn builder() -> builder::Feed {
-        builder::Feed::default()
+        Default::default()
     }
 }
 #[doc = "Type of data contained in this feed: GTFS, GTFS-RT, GBFS, or MDS."]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"Type of data contained in this feed: GTFS, GTFS-RT, GBFS, or MDS.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"gtfs\","]
+#[doc = "    \"gtfs-rt\","]
+#[doc = "    \"gbfs\","]
+#[doc = "    \"mds\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 pub enum FeedSpec {
     #[serde(rename = "gtfs")]
     Gtfs,
@@ -158,52 +448,122 @@ pub enum FeedSpec {
     #[serde(rename = "mds")]
     Mds,
 }
-impl From<&FeedSpec> for FeedSpec {
+impl ::std::convert::From<&Self> for FeedSpec {
     fn from(value: &FeedSpec) -> Self {
         value.clone()
     }
 }
-impl ToString for FeedSpec {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for FeedSpec {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Gtfs => "gtfs".to_string(),
-            Self::GtfsRt => "gtfs-rt".to_string(),
-            Self::Gbfs => "gbfs".to_string(),
-            Self::Mds => "mds".to_string(),
+            Self::Gtfs => write!(f, "gtfs"),
+            Self::GtfsRt => write!(f, "gtfs-rt"),
+            Self::Gbfs => write!(f, "gbfs"),
+            Self::Mds => write!(f, "mds"),
         }
     }
 }
-impl std::str::FromStr for FeedSpec {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedSpec {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "gtfs" => Ok(Self::Gtfs),
             "gtfs-rt" => Ok(Self::GtfsRt),
             "gbfs" => Ok(Self::Gbfs),
             "mds" => Ok(Self::Mds),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
-impl std::convert::TryFrom<&str> for FeedSpec {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedSpec {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedSpec {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedSpec {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedSpec {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedSpec {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[doc = "FeedUrls"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"gbfs_auto_discovery\": {"]
+#[doc = "      \"description\": \"Auto-discovery file in JSON format that links to all of the other GBFS files published by the system.\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "    },"]
+#[doc = "    \"mds_provider\": {"]
+#[doc = "      \"description\": \"MDS provider API endpoints are intended to be implemented by mobility providers and consumed by regulatory agencies.\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "    },"]
+#[doc = "    \"realtime_alerts\": {"]
+#[doc = "      \"description\": \"URL for GTFS Realtime Alert messages.\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "    },"]
+#[doc = "    \"realtime_trip_updates\": {"]
+#[doc = "      \"description\": \"URL for GTFS Realtime TripUpdate messages.\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "    },"]
+#[doc = "    \"realtime_vehicle_positions\": {"]
+#[doc = "      \"description\": \"URL for GTFS Realtime VehiclePosition messages.\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "    },"]
+#[doc = "    \"static_current\": {"]
+#[doc = "      \"description\": \"URL (in Transitland Extended URL format) for the static feed that represents today's service. (Has the same meaning as url.)\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "    },"]
+#[doc = "    \"static_historic\": {"]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent past service that is no longer in effect.\","]
+#[doc = "        \"type\": \"string\","]
+#[doc = "        \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    \"static_hypothetical\": {"]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent potential service or network changes. Typically used to represent scenarios that may (or may not) take effect months or years in the future.\","]
+#[doc = "        \"type\": \"string\","]
+#[doc = "        \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    \"static_planned\": {"]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent service planned for upcoming dates. Typically used to represent calendar/service changes that will take effect few weeks or months in the future.\","]
+#[doc = "        \"type\": \"string\","]
+#[doc = "        \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "      }"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct FeedUrls {
     #[doc = "Auto-discovery file in JSON format that links to all of the other GBFS files published by the system."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -223,617 +583,875 @@ pub struct FeedUrls {
     #[doc = "URL (in Transitland Extended URL format) for the static feed that represents today's service. (Has the same meaning as url.)"]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub static_current: Option<FeedUrlsStaticCurrent>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub static_historic: Vec<FeedUrlsStaticHistoricItem>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub static_hypothetical: Vec<FeedUrlsStaticHypotheticalItem>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub static_planned: Vec<FeedUrlsStaticPlannedItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub static_historic: ::std::vec::Vec<FeedUrlsStaticHistoricItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub static_hypothetical: ::std::vec::Vec<FeedUrlsStaticHypotheticalItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub static_planned: ::std::vec::Vec<FeedUrlsStaticPlannedItem>,
 }
-impl From<&FeedUrls> for FeedUrls {
+impl ::std::convert::From<&FeedUrls> for FeedUrls {
     fn from(value: &FeedUrls) -> Self {
         value.clone()
     }
 }
+impl ::std::default::Default for FeedUrls {
+    fn default() -> Self {
+        Self {
+            gbfs_auto_discovery: Default::default(),
+            mds_provider: Default::default(),
+            realtime_alerts: Default::default(),
+            realtime_trip_updates: Default::default(),
+            realtime_vehicle_positions: Default::default(),
+            static_current: Default::default(),
+            static_historic: Default::default(),
+            static_hypothetical: Default::default(),
+            static_planned: Default::default(),
+        }
+    }
+}
 impl FeedUrls {
     pub fn builder() -> builder::FeedUrls {
-        builder::FeedUrls::default()
+        Default::default()
     }
 }
 #[doc = "Auto-discovery file in JSON format that links to all of the other GBFS files published by the system."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"Auto-discovery file in JSON format that links to all of the other GBFS files published by the system.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsGbfsAutoDiscovery(String);
-impl std::ops::Deref for FeedUrlsGbfsAutoDiscovery {
+impl ::std::ops::Deref for FeedUrlsGbfsAutoDiscovery {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsGbfsAutoDiscovery> for String {
+impl ::std::convert::From<FeedUrlsGbfsAutoDiscovery> for String {
     fn from(value: FeedUrlsGbfsAutoDiscovery) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsGbfsAutoDiscovery> for FeedUrlsGbfsAutoDiscovery {
+impl ::std::convert::From<&FeedUrlsGbfsAutoDiscovery> for FeedUrlsGbfsAutoDiscovery {
     fn from(value: &FeedUrlsGbfsAutoDiscovery) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsGbfsAutoDiscovery {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsGbfsAutoDiscovery {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsGbfsAutoDiscovery {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsGbfsAutoDiscovery {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsGbfsAutoDiscovery {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsGbfsAutoDiscovery {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsGbfsAutoDiscovery {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsGbfsAutoDiscovery {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsGbfsAutoDiscovery {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsGbfsAutoDiscovery {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "MDS provider API endpoints are intended to be implemented by mobility providers and consumed by regulatory agencies."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"MDS provider API endpoints are intended to be implemented by mobility providers and consumed by regulatory agencies.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsMdsProvider(String);
-impl std::ops::Deref for FeedUrlsMdsProvider {
+impl ::std::ops::Deref for FeedUrlsMdsProvider {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsMdsProvider> for String {
+impl ::std::convert::From<FeedUrlsMdsProvider> for String {
     fn from(value: FeedUrlsMdsProvider) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsMdsProvider> for FeedUrlsMdsProvider {
+impl ::std::convert::From<&FeedUrlsMdsProvider> for FeedUrlsMdsProvider {
     fn from(value: &FeedUrlsMdsProvider) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsMdsProvider {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsMdsProvider {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsMdsProvider {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsMdsProvider {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsMdsProvider {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsMdsProvider {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsMdsProvider {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsMdsProvider {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsMdsProvider {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsMdsProvider {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "URL for GTFS Realtime Alert messages."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"URL for GTFS Realtime Alert messages.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsRealtimeAlerts(String);
-impl std::ops::Deref for FeedUrlsRealtimeAlerts {
+impl ::std::ops::Deref for FeedUrlsRealtimeAlerts {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsRealtimeAlerts> for String {
+impl ::std::convert::From<FeedUrlsRealtimeAlerts> for String {
     fn from(value: FeedUrlsRealtimeAlerts) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsRealtimeAlerts> for FeedUrlsRealtimeAlerts {
+impl ::std::convert::From<&FeedUrlsRealtimeAlerts> for FeedUrlsRealtimeAlerts {
     fn from(value: &FeedUrlsRealtimeAlerts) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsRealtimeAlerts {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsRealtimeAlerts {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsRealtimeAlerts {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsRealtimeAlerts {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsRealtimeAlerts {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsRealtimeAlerts {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsRealtimeAlerts {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsRealtimeAlerts {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsRealtimeAlerts {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsRealtimeAlerts {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "URL for GTFS Realtime TripUpdate messages."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"URL for GTFS Realtime TripUpdate messages.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsRealtimeTripUpdates(String);
-impl std::ops::Deref for FeedUrlsRealtimeTripUpdates {
+impl ::std::ops::Deref for FeedUrlsRealtimeTripUpdates {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsRealtimeTripUpdates> for String {
+impl ::std::convert::From<FeedUrlsRealtimeTripUpdates> for String {
     fn from(value: FeedUrlsRealtimeTripUpdates) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsRealtimeTripUpdates> for FeedUrlsRealtimeTripUpdates {
+impl ::std::convert::From<&FeedUrlsRealtimeTripUpdates> for FeedUrlsRealtimeTripUpdates {
     fn from(value: &FeedUrlsRealtimeTripUpdates) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsRealtimeTripUpdates {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsRealtimeTripUpdates {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsRealtimeTripUpdates {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsRealtimeTripUpdates {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsRealtimeTripUpdates {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsRealtimeTripUpdates {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsRealtimeTripUpdates {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsRealtimeTripUpdates {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsRealtimeTripUpdates {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsRealtimeTripUpdates {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "URL for GTFS Realtime VehiclePosition messages."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"URL for GTFS Realtime VehiclePosition messages.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsRealtimeVehiclePositions(String);
-impl std::ops::Deref for FeedUrlsRealtimeVehiclePositions {
+impl ::std::ops::Deref for FeedUrlsRealtimeVehiclePositions {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsRealtimeVehiclePositions> for String {
+impl ::std::convert::From<FeedUrlsRealtimeVehiclePositions> for String {
     fn from(value: FeedUrlsRealtimeVehiclePositions) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsRealtimeVehiclePositions> for FeedUrlsRealtimeVehiclePositions {
+impl ::std::convert::From<&FeedUrlsRealtimeVehiclePositions> for FeedUrlsRealtimeVehiclePositions {
     fn from(value: &FeedUrlsRealtimeVehiclePositions) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsRealtimeVehiclePositions {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsRealtimeVehiclePositions {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsRealtimeVehiclePositions {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsRealtimeVehiclePositions {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsRealtimeVehiclePositions {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsRealtimeVehiclePositions {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsRealtimeVehiclePositions {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsRealtimeVehiclePositions {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsRealtimeVehiclePositions {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsRealtimeVehiclePositions {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "URL (in Transitland Extended URL format) for the static feed that represents today's service. (Has the same meaning as url.)"]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"URL (in Transitland Extended URL format) for the static feed that represents today's service. (Has the same meaning as url.)\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsStaticCurrent(String);
-impl std::ops::Deref for FeedUrlsStaticCurrent {
+impl ::std::ops::Deref for FeedUrlsStaticCurrent {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsStaticCurrent> for String {
+impl ::std::convert::From<FeedUrlsStaticCurrent> for String {
     fn from(value: FeedUrlsStaticCurrent) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsStaticCurrent> for FeedUrlsStaticCurrent {
+impl ::std::convert::From<&FeedUrlsStaticCurrent> for FeedUrlsStaticCurrent {
     fn from(value: &FeedUrlsStaticCurrent) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsStaticCurrent {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsStaticCurrent {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsStaticCurrent {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsStaticCurrent {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsStaticCurrent {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsStaticCurrent {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsStaticCurrent {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsStaticCurrent {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsStaticCurrent {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsStaticCurrent {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "URLs (in Transitland Extended URL format) for static feeds that represent past service that is no longer in effect."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent past service that is no longer in effect.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsStaticHistoricItem(String);
-impl std::ops::Deref for FeedUrlsStaticHistoricItem {
+impl ::std::ops::Deref for FeedUrlsStaticHistoricItem {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsStaticHistoricItem> for String {
+impl ::std::convert::From<FeedUrlsStaticHistoricItem> for String {
     fn from(value: FeedUrlsStaticHistoricItem) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsStaticHistoricItem> for FeedUrlsStaticHistoricItem {
+impl ::std::convert::From<&FeedUrlsStaticHistoricItem> for FeedUrlsStaticHistoricItem {
     fn from(value: &FeedUrlsStaticHistoricItem) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsStaticHistoricItem {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsStaticHistoricItem {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsStaticHistoricItem {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsStaticHistoricItem {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsStaticHistoricItem {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsStaticHistoricItem {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsStaticHistoricItem {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsStaticHistoricItem {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsStaticHistoricItem {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsStaticHistoricItem {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "URLs (in Transitland Extended URL format) for static feeds that represent potential service or network changes. Typically used to represent scenarios that may (or may not) take effect months or years in the future."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent potential service or network changes. Typically used to represent scenarios that may (or may not) take effect months or years in the future.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsStaticHypotheticalItem(String);
-impl std::ops::Deref for FeedUrlsStaticHypotheticalItem {
+impl ::std::ops::Deref for FeedUrlsStaticHypotheticalItem {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsStaticHypotheticalItem> for String {
+impl ::std::convert::From<FeedUrlsStaticHypotheticalItem> for String {
     fn from(value: FeedUrlsStaticHypotheticalItem) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsStaticHypotheticalItem> for FeedUrlsStaticHypotheticalItem {
+impl ::std::convert::From<&FeedUrlsStaticHypotheticalItem> for FeedUrlsStaticHypotheticalItem {
     fn from(value: &FeedUrlsStaticHypotheticalItem) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsStaticHypotheticalItem {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsStaticHypotheticalItem {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsStaticHypotheticalItem {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsStaticHypotheticalItem {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsStaticHypotheticalItem {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsStaticHypotheticalItem {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsStaticHypotheticalItem {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsStaticHypotheticalItem {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsStaticHypotheticalItem {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsStaticHypotheticalItem {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "URLs (in Transitland Extended URL format) for static feeds that represent service planned for upcoming dates. Typically used to represent calendar/service changes that will take effect few weeks or months in the future."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"URLs (in Transitland Extended URL format) for static feeds that represent service planned for upcoming dates. Typically used to represent calendar/service changes that will take effect few weeks or months in the future.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct FeedUrlsStaticPlannedItem(String);
-impl std::ops::Deref for FeedUrlsStaticPlannedItem {
+impl ::std::ops::Deref for FeedUrlsStaticPlannedItem {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<FeedUrlsStaticPlannedItem> for String {
+impl ::std::convert::From<FeedUrlsStaticPlannedItem> for String {
     fn from(value: FeedUrlsStaticPlannedItem) -> Self {
         value.0
     }
 }
-impl From<&FeedUrlsStaticPlannedItem> for FeedUrlsStaticPlannedItem {
+impl ::std::convert::From<&FeedUrlsStaticPlannedItem> for FeedUrlsStaticPlannedItem {
     fn from(value: &FeedUrlsStaticPlannedItem) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for FeedUrlsStaticPlannedItem {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for FeedUrlsStaticPlannedItem {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for FeedUrlsStaticPlannedItem {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for FeedUrlsStaticPlannedItem {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for FeedUrlsStaticPlannedItem {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for FeedUrlsStaticPlannedItem {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for FeedUrlsStaticPlannedItem {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for FeedUrlsStaticPlannedItem {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for FeedUrlsStaticPlannedItem {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for FeedUrlsStaticPlannedItem {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "A language specified using an IETF language tag."]
-#[derive(Clone, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"A language specified using an IETF language tag.\","]
+#[doc = "  \"type\": \"string\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
+#[serde(transparent)]
 pub struct Language(pub String);
-impl std::ops::Deref for Language {
+impl ::std::ops::Deref for Language {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<Language> for String {
+impl ::std::convert::From<Language> for String {
     fn from(value: Language) -> Self {
         value.0
     }
 }
-impl From<&Language> for Language {
+impl ::std::convert::From<&Language> for Language {
     fn from(value: &Language) -> Self {
         value.clone()
     }
 }
-impl From<String> for Language {
+impl ::std::convert::From<String> for Language {
     fn from(value: String) -> Self {
         Self(value)
     }
 }
-impl std::str::FromStr for Language {
-    type Err = std::convert::Infallible;
-    fn from_str(value: &str) -> Result<Self, Self::Err> {
+impl ::std::str::FromStr for Language {
+    type Err = ::std::convert::Infallible;
+    fn from_str(value: &str) -> ::std::result::Result<Self, Self::Err> {
         Ok(Self(value.to_string()))
     }
 }
-impl ToString for Language {
-    fn to_string(&self) -> String {
-        self.0.to_string()
+impl ::std::fmt::Display for Language {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+        self.0.fmt(f)
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[doc = "LicenseDescription"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"attribution_instructions\": {"]
+#[doc = "      \"description\": \"Feed consumers must follow these instructions for how to provide attribution.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"attribution_text\": {"]
+#[doc = "      \"description\": \"Feed consumers must include this particular text when using this feed.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"commercial_use_allowed\": {"]
+#[doc = "      \"description\": \"Are feed consumers allowed to use the feed for commercial purposes?\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"yes\","]
+#[doc = "        \"no\","]
+#[doc = "        \"unknown\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"create_derived_product\": {"]
+#[doc = "      \"description\": \"Are feed consumers allowed to create and share derived products from the feed?\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"yes\","]
+#[doc = "        \"no\","]
+#[doc = "        \"unknown\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"redistribution_allowed\": {"]
+#[doc = "      \"description\": \"Are feed consumers allowed to redistribute the feed in its entirety?\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"yes\","]
+#[doc = "        \"no\","]
+#[doc = "        \"unknown\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"share_alike_optional\": {"]
+#[doc = "      \"description\": \"Are feed consumers allowed to keep their modifications of this feed private?\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"yes\","]
+#[doc = "        \"no\","]
+#[doc = "        \"unknown\""]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"spdx_identifier\": {"]
+#[doc = "      \"description\": \"SPDX identifier for a common license. See https://spdx.org/licenses/\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"anyOf\": ["]
+#[doc = "        {"]
+#[doc = "          \"$ref\": \"#/definitions/spdxLicenseIds\""]
+#[doc = "        }"]
+#[doc = "      ]"]
+#[doc = "    },"]
+#[doc = "    \"url\": {"]
+#[doc = "      \"description\": \"URL for a custom license.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"use_without_attribution\": {"]
+#[doc = "      \"description\": \"Are feed consumers allowed to use the feed contents without including attribution text in their app or map?\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"enum\": ["]
+#[doc = "        \"yes\","]
+#[doc = "        \"no\","]
+#[doc = "        \"unknown\""]
+#[doc = "      ]"]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct LicenseDescription {
     #[doc = "Feed consumers must follow these instructions for how to provide attribution."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -863,18 +1481,59 @@ pub struct LicenseDescription {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub use_without_attribution: Option<LicenseDescriptionUseWithoutAttribution>,
 }
-impl From<&LicenseDescription> for LicenseDescription {
+impl ::std::convert::From<&LicenseDescription> for LicenseDescription {
     fn from(value: &LicenseDescription) -> Self {
         value.clone()
     }
 }
+impl ::std::default::Default for LicenseDescription {
+    fn default() -> Self {
+        Self {
+            attribution_instructions: Default::default(),
+            attribution_text: Default::default(),
+            commercial_use_allowed: Default::default(),
+            create_derived_product: Default::default(),
+            redistribution_allowed: Default::default(),
+            share_alike_optional: Default::default(),
+            spdx_identifier: Default::default(),
+            url: Default::default(),
+            use_without_attribution: Default::default(),
+        }
+    }
+}
 impl LicenseDescription {
     pub fn builder() -> builder::LicenseDescription {
-        builder::LicenseDescription::default()
+        Default::default()
     }
 }
 #[doc = "Are feed consumers allowed to use the feed for commercial purposes?"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"Are feed consumers allowed to use the feed for commercial purposes?\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"yes\","]
+#[doc = "    \"no\","]
+#[doc = "    \"unknown\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 pub enum LicenseDescriptionCommercialUseAllowed {
     #[serde(rename = "yes")]
     Yes,
@@ -883,51 +1542,81 @@ pub enum LicenseDescriptionCommercialUseAllowed {
     #[serde(rename = "unknown")]
     Unknown,
 }
-impl From<&LicenseDescriptionCommercialUseAllowed> for LicenseDescriptionCommercialUseAllowed {
+impl ::std::convert::From<&Self> for LicenseDescriptionCommercialUseAllowed {
     fn from(value: &LicenseDescriptionCommercialUseAllowed) -> Self {
         value.clone()
     }
 }
-impl ToString for LicenseDescriptionCommercialUseAllowed {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for LicenseDescriptionCommercialUseAllowed {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Yes => "yes".to_string(),
-            Self::No => "no".to_string(),
-            Self::Unknown => "unknown".to_string(),
+            Self::Yes => write!(f, "yes"),
+            Self::No => write!(f, "no"),
+            Self::Unknown => write!(f, "unknown"),
         }
     }
 }
-impl std::str::FromStr for LicenseDescriptionCommercialUseAllowed {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for LicenseDescriptionCommercialUseAllowed {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
             "unknown" => Ok(Self::Unknown),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
-impl std::convert::TryFrom<&str> for LicenseDescriptionCommercialUseAllowed {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for LicenseDescriptionCommercialUseAllowed {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for LicenseDescriptionCommercialUseAllowed {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for LicenseDescriptionCommercialUseAllowed {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for LicenseDescriptionCommercialUseAllowed {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for LicenseDescriptionCommercialUseAllowed {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 #[doc = "Are feed consumers allowed to create and share derived products from the feed?"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"Are feed consumers allowed to create and share derived products from the feed?\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"yes\","]
+#[doc = "    \"no\","]
+#[doc = "    \"unknown\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 pub enum LicenseDescriptionCreateDerivedProduct {
     #[serde(rename = "yes")]
     Yes,
@@ -936,51 +1625,81 @@ pub enum LicenseDescriptionCreateDerivedProduct {
     #[serde(rename = "unknown")]
     Unknown,
 }
-impl From<&LicenseDescriptionCreateDerivedProduct> for LicenseDescriptionCreateDerivedProduct {
+impl ::std::convert::From<&Self> for LicenseDescriptionCreateDerivedProduct {
     fn from(value: &LicenseDescriptionCreateDerivedProduct) -> Self {
         value.clone()
     }
 }
-impl ToString for LicenseDescriptionCreateDerivedProduct {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for LicenseDescriptionCreateDerivedProduct {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Yes => "yes".to_string(),
-            Self::No => "no".to_string(),
-            Self::Unknown => "unknown".to_string(),
+            Self::Yes => write!(f, "yes"),
+            Self::No => write!(f, "no"),
+            Self::Unknown => write!(f, "unknown"),
         }
     }
 }
-impl std::str::FromStr for LicenseDescriptionCreateDerivedProduct {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for LicenseDescriptionCreateDerivedProduct {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
             "unknown" => Ok(Self::Unknown),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
-impl std::convert::TryFrom<&str> for LicenseDescriptionCreateDerivedProduct {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for LicenseDescriptionCreateDerivedProduct {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for LicenseDescriptionCreateDerivedProduct {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for LicenseDescriptionCreateDerivedProduct {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for LicenseDescriptionCreateDerivedProduct {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for LicenseDescriptionCreateDerivedProduct {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 #[doc = "Are feed consumers allowed to redistribute the feed in its entirety?"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"Are feed consumers allowed to redistribute the feed in its entirety?\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"yes\","]
+#[doc = "    \"no\","]
+#[doc = "    \"unknown\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 pub enum LicenseDescriptionRedistributionAllowed {
     #[serde(rename = "yes")]
     Yes,
@@ -989,51 +1708,81 @@ pub enum LicenseDescriptionRedistributionAllowed {
     #[serde(rename = "unknown")]
     Unknown,
 }
-impl From<&LicenseDescriptionRedistributionAllowed> for LicenseDescriptionRedistributionAllowed {
+impl ::std::convert::From<&Self> for LicenseDescriptionRedistributionAllowed {
     fn from(value: &LicenseDescriptionRedistributionAllowed) -> Self {
         value.clone()
     }
 }
-impl ToString for LicenseDescriptionRedistributionAllowed {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for LicenseDescriptionRedistributionAllowed {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Yes => "yes".to_string(),
-            Self::No => "no".to_string(),
-            Self::Unknown => "unknown".to_string(),
+            Self::Yes => write!(f, "yes"),
+            Self::No => write!(f, "no"),
+            Self::Unknown => write!(f, "unknown"),
         }
     }
 }
-impl std::str::FromStr for LicenseDescriptionRedistributionAllowed {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for LicenseDescriptionRedistributionAllowed {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
             "unknown" => Ok(Self::Unknown),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
-impl std::convert::TryFrom<&str> for LicenseDescriptionRedistributionAllowed {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for LicenseDescriptionRedistributionAllowed {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for LicenseDescriptionRedistributionAllowed {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for LicenseDescriptionRedistributionAllowed {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for LicenseDescriptionRedistributionAllowed {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for LicenseDescriptionRedistributionAllowed {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 #[doc = "Are feed consumers allowed to keep their modifications of this feed private?"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"Are feed consumers allowed to keep their modifications of this feed private?\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"yes\","]
+#[doc = "    \"no\","]
+#[doc = "    \"unknown\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 pub enum LicenseDescriptionShareAlikeOptional {
     #[serde(rename = "yes")]
     Yes,
@@ -1042,51 +1791,81 @@ pub enum LicenseDescriptionShareAlikeOptional {
     #[serde(rename = "unknown")]
     Unknown,
 }
-impl From<&LicenseDescriptionShareAlikeOptional> for LicenseDescriptionShareAlikeOptional {
+impl ::std::convert::From<&Self> for LicenseDescriptionShareAlikeOptional {
     fn from(value: &LicenseDescriptionShareAlikeOptional) -> Self {
         value.clone()
     }
 }
-impl ToString for LicenseDescriptionShareAlikeOptional {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for LicenseDescriptionShareAlikeOptional {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Yes => "yes".to_string(),
-            Self::No => "no".to_string(),
-            Self::Unknown => "unknown".to_string(),
+            Self::Yes => write!(f, "yes"),
+            Self::No => write!(f, "no"),
+            Self::Unknown => write!(f, "unknown"),
         }
     }
 }
-impl std::str::FromStr for LicenseDescriptionShareAlikeOptional {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for LicenseDescriptionShareAlikeOptional {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
             "unknown" => Ok(Self::Unknown),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
-impl std::convert::TryFrom<&str> for LicenseDescriptionShareAlikeOptional {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for LicenseDescriptionShareAlikeOptional {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for LicenseDescriptionShareAlikeOptional {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for LicenseDescriptionShareAlikeOptional {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for LicenseDescriptionShareAlikeOptional {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for LicenseDescriptionShareAlikeOptional {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
 #[doc = "Are feed consumers allowed to use the feed contents without including attribution text in their app or map?"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"Are feed consumers allowed to use the feed contents without including attribution text in their app or map?\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"yes\","]
+#[doc = "    \"no\","]
+#[doc = "    \"unknown\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 pub enum LicenseDescriptionUseWithoutAttribution {
     #[serde(rename = "yes")]
     Yes,
@@ -1095,55 +1874,118 @@ pub enum LicenseDescriptionUseWithoutAttribution {
     #[serde(rename = "unknown")]
     Unknown,
 }
-impl From<&LicenseDescriptionUseWithoutAttribution> for LicenseDescriptionUseWithoutAttribution {
+impl ::std::convert::From<&Self> for LicenseDescriptionUseWithoutAttribution {
     fn from(value: &LicenseDescriptionUseWithoutAttribution) -> Self {
         value.clone()
     }
 }
-impl ToString for LicenseDescriptionUseWithoutAttribution {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for LicenseDescriptionUseWithoutAttribution {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::Yes => "yes".to_string(),
-            Self::No => "no".to_string(),
-            Self::Unknown => "unknown".to_string(),
+            Self::Yes => write!(f, "yes"),
+            Self::No => write!(f, "no"),
+            Self::Unknown => write!(f, "unknown"),
         }
     }
 }
-impl std::str::FromStr for LicenseDescriptionUseWithoutAttribution {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for LicenseDescriptionUseWithoutAttribution {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "yes" => Ok(Self::Yes),
             "no" => Ok(Self::No),
             "unknown" => Ok(Self::Unknown),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
-impl std::convert::TryFrom<&str> for LicenseDescriptionUseWithoutAttribution {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for LicenseDescriptionUseWithoutAttribution {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for LicenseDescriptionUseWithoutAttribution {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for LicenseDescriptionUseWithoutAttribution {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for LicenseDescriptionUseWithoutAttribution {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for LicenseDescriptionUseWithoutAttribution {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[doc = "Operator"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"required\": ["]
+#[doc = "    \"name\","]
+#[doc = "    \"onestop_id\""]
+#[doc = "  ],"]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"associated_feeds\": {"]
+#[doc = "      \"description\": \"Define associations between an operator and one or more feeds. If this operator is defined underneath a feed, it is not necessary to include a feed_onestop_id. In all cases, it is only necessary to specify a gtfs_agency_id when a feed includes more than one agency; Transitland will auto-detect the agency_id if the feed includes only one feed.\","]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"type\": \"object\","]
+#[doc = "        \"properties\": {"]
+#[doc = "          \"feed_onestop_id\": {},"]
+#[doc = "          \"gtfs_agency_id\": {"]
+#[doc = "            \"description\": \"ID from the \","]
+#[doc = "            \"type\": \"string\""]
+#[doc = "          }"]
+#[doc = "        }"]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    \"name\": {"]
+#[doc = "      \"description\": \"Full name of the operator. If there is an abbreviation or acronym for the operator, also define a short_name.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"onestop_id\": {"]
+#[doc = "      \"description\": \"The globally unique Onestop ID for this operator.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"short_name\": {"]
+#[doc = "      \"description\": \"Abbreviation, acronym, or secondary name of the operator.\","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    },"]
+#[doc = "    \"supersedes_ids\": {"]
+#[doc = "      \"description\": \"One or more Onestop IDs for old operator records that have since been merged into or taken over by this operator record.\","]
+#[doc = "      \"type\": \"array\","]
+#[doc = "      \"items\": {"]
+#[doc = "        \"type\": \"string\""]
+#[doc = "      }"]
+#[doc = "    },"]
+#[doc = "    \"tags\": {"]
+#[doc = "      \"description\": \"Extended information about the operator, including identifiers for this operator in other datasets.\","]
+#[doc = "      \"type\": \"object\""]
+#[doc = "    },"]
+#[doc = "    \"website\": {"]
+#[doc = "      \"description\": \"URL for the operator's public website.\","]
+#[doc = "      \"type\": \"string\","]
+#[doc = "      \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "    }"]
+#[doc = "  },"]
+#[doc = "  \"additionalProperties\": false"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct Operator {
     #[doc = "Define associations between an operator and one or more feeds. If this operator is defined underneath a feed, it is not necessary to include a feed_onestop_id. In all cases, it is only necessary to specify a gtfs_agency_id when a feed includes more than one agency; Transitland will auto-detect the agency_id if the feed includes only one feed."]
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub associated_feeds: Vec<OperatorAssociatedFeedsItem>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub associated_feeds: ::std::vec::Vec<OperatorAssociatedFeedsItem>,
     #[doc = "Full name of the operator. If there is an abbreviation or acronym for the operator, also define a short_name."]
     pub name: String,
     #[doc = "The globally unique Onestop ID for this operator."]
@@ -1152,106 +1994,727 @@ pub struct Operator {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub short_name: Option<String>,
     #[doc = "One or more Onestop IDs for old operator records that have since been merged into or taken over by this operator record."]
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub supersedes_ids: Vec<String>,
-    #[serde(default, skip_serializing_if = "serde_json::Map::is_empty")]
-    pub tags: serde_json::Map<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "::std::vec::Vec::is_empty")]
+    pub supersedes_ids: ::std::vec::Vec<String>,
+    #[doc = "Extended information about the operator, including identifiers for this operator in other datasets."]
+    #[serde(default, skip_serializing_if = "::serde_json::Map::is_empty")]
+    pub tags: ::serde_json::Map<String, ::serde_json::Value>,
     #[doc = "URL for the operator's public website."]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub website: Option<OperatorWebsite>,
 }
-impl From<&Operator> for Operator {
+impl ::std::convert::From<&Operator> for Operator {
     fn from(value: &Operator) -> Self {
         value.clone()
     }
 }
 impl Operator {
     pub fn builder() -> builder::Operator {
-        builder::Operator::default()
+        Default::default()
     }
 }
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[doc = "OperatorAssociatedFeedsItem"]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"type\": \"object\","]
+#[doc = "  \"properties\": {"]
+#[doc = "    \"feed_onestop_id\": {},"]
+#[doc = "    \"gtfs_agency_id\": {"]
+#[doc = "      \"description\": \"ID from the \","]
+#[doc = "      \"type\": \"string\""]
+#[doc = "    }"]
+#[doc = "  }"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
 pub struct OperatorAssociatedFeedsItem {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub feed_onestop_id: Option<String>,
+    pub feed_onestop_id: Option<::serde_json::Value>,
     #[doc = "ID from the "]
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gtfs_agency_id: Option<String>,
 }
-impl From<&OperatorAssociatedFeedsItem> for OperatorAssociatedFeedsItem {
+impl ::std::convert::From<&OperatorAssociatedFeedsItem> for OperatorAssociatedFeedsItem {
     fn from(value: &OperatorAssociatedFeedsItem) -> Self {
         value.clone()
     }
 }
+impl ::std::default::Default for OperatorAssociatedFeedsItem {
+    fn default() -> Self {
+        Self {
+            feed_onestop_id: Default::default(),
+            gtfs_agency_id: Default::default(),
+        }
+    }
+}
 impl OperatorAssociatedFeedsItem {
     pub fn builder() -> builder::OperatorAssociatedFeedsItem {
-        builder::OperatorAssociatedFeedsItem::default()
+        Default::default()
     }
 }
 #[doc = "URL for the operator's public website."]
-#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"URL for the operator's public website.\","]
+#[doc = "  \"type\": \"string\","]
+#[doc = "  \"pattern\": \"^(http|https|ftp):\\\\/\\\\/[\\\\p{L}\\\\p{N}.,~#{}():&\\\\/%='?_/-]+$\""]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(:: serde :: Serialize, Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[serde(transparent)]
 pub struct OperatorWebsite(String);
-impl std::ops::Deref for OperatorWebsite {
+impl ::std::ops::Deref for OperatorWebsite {
     type Target = String;
     fn deref(&self) -> &String {
         &self.0
     }
 }
-impl From<OperatorWebsite> for String {
+impl ::std::convert::From<OperatorWebsite> for String {
     fn from(value: OperatorWebsite) -> Self {
         value.0
     }
 }
-impl From<&OperatorWebsite> for OperatorWebsite {
+impl ::std::convert::From<&OperatorWebsite> for OperatorWebsite {
     fn from(value: &OperatorWebsite) -> Self {
         value.clone()
     }
 }
-impl std::str::FromStr for OperatorWebsite {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for OperatorWebsite {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         if regress::Regex::new("^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$")
             .unwrap()
             .find(value)
             .is_none()
         {
-            return Err(
-                "doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"",
-            );
+            return Err ("doesn't match pattern \"^(http|https|ftp):\\/\\/[\\p{L}\\p{N}.,~#{}():&\\/%='?_/-]+$\"" . into ()) ;
         }
         Ok(Self(value.to_string()))
     }
 }
-impl std::convert::TryFrom<&str> for OperatorWebsite {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for OperatorWebsite {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for OperatorWebsite {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for OperatorWebsite {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for OperatorWebsite {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for OperatorWebsite {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl<'de> serde::Deserialize<'de> for OperatorWebsite {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+impl<'de> ::serde::Deserialize<'de> for OperatorWebsite {
+    fn deserialize<D>(deserializer: D) -> ::std::result::Result<Self, D::Error>
     where
-        D: serde::Deserializer<'de>,
+        D: ::serde::Deserializer<'de>,
     {
         String::deserialize(deserializer)?
             .parse()
-            .map_err(|e: &'static str| <D::Error as serde::de::Error>::custom(e.to_string()))
+            .map_err(|e: self::error::ConversionError| {
+                <D::Error as ::serde::de::Error>::custom(e.to_string())
+            })
     }
 }
 #[doc = "List of SPDX short-form identifiers. To update: http https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json | jq '.licenses[] .licenseId'"]
-#[derive(Clone, Copy, Debug, Deserialize, Eq, Hash, Ord, PartialEq, PartialOrd, Serialize)]
+#[doc = r""]
+#[doc = r" <details><summary>JSON schema</summary>"]
+#[doc = r""]
+#[doc = r" ```json"]
+#[doc = "{"]
+#[doc = "  \"description\": \"List of SPDX short-form identifiers. To update: http https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json | jq '.licenses[] .licenseId'\","]
+#[doc = "  \"enum\": ["]
+#[doc = "    \"0BSD\","]
+#[doc = "    \"AAL\","]
+#[doc = "    \"Abstyles\","]
+#[doc = "    \"AdaCore-doc\","]
+#[doc = "    \"Adobe-2006\","]
+#[doc = "    \"Adobe-Glyph\","]
+#[doc = "    \"ADSL\","]
+#[doc = "    \"AFL-1.1\","]
+#[doc = "    \"AFL-1.2\","]
+#[doc = "    \"AFL-2.0\","]
+#[doc = "    \"AFL-2.1\","]
+#[doc = "    \"AFL-3.0\","]
+#[doc = "    \"Afmparse\","]
+#[doc = "    \"AGPL-1.0\","]
+#[doc = "    \"AGPL-1.0-only\","]
+#[doc = "    \"AGPL-1.0-or-later\","]
+#[doc = "    \"AGPL-3.0\","]
+#[doc = "    \"AGPL-3.0-only\","]
+#[doc = "    \"AGPL-3.0-or-later\","]
+#[doc = "    \"Aladdin\","]
+#[doc = "    \"AMDPLPA\","]
+#[doc = "    \"AML\","]
+#[doc = "    \"AMPAS\","]
+#[doc = "    \"ANTLR-PD\","]
+#[doc = "    \"ANTLR-PD-fallback\","]
+#[doc = "    \"Apache-1.0\","]
+#[doc = "    \"Apache-1.1\","]
+#[doc = "    \"Apache-2.0\","]
+#[doc = "    \"APAFML\","]
+#[doc = "    \"APL-1.0\","]
+#[doc = "    \"App-s2p\","]
+#[doc = "    \"APSL-1.0\","]
+#[doc = "    \"APSL-1.1\","]
+#[doc = "    \"APSL-1.2\","]
+#[doc = "    \"APSL-2.0\","]
+#[doc = "    \"Arphic-1999\","]
+#[doc = "    \"Artistic-1.0\","]
+#[doc = "    \"Artistic-1.0-cl8\","]
+#[doc = "    \"Artistic-1.0-Perl\","]
+#[doc = "    \"Artistic-2.0\","]
+#[doc = "    \"ASWF-Digital-Assets-1.0\","]
+#[doc = "    \"ASWF-Digital-Assets-1.1\","]
+#[doc = "    \"Baekmuk\","]
+#[doc = "    \"Bahyph\","]
+#[doc = "    \"Barr\","]
+#[doc = "    \"Beerware\","]
+#[doc = "    \"Bitstream-Charter\","]
+#[doc = "    \"Bitstream-Vera\","]
+#[doc = "    \"BitTorrent-1.0\","]
+#[doc = "    \"BitTorrent-1.1\","]
+#[doc = "    \"blessing\","]
+#[doc = "    \"BlueOak-1.0.0\","]
+#[doc = "    \"Boehm-GC\","]
+#[doc = "    \"Borceux\","]
+#[doc = "    \"Brian-Gladman-3-Clause\","]
+#[doc = "    \"BSD-1-Clause\","]
+#[doc = "    \"BSD-2-Clause\","]
+#[doc = "    \"BSD-2-Clause-FreeBSD\","]
+#[doc = "    \"BSD-2-Clause-NetBSD\","]
+#[doc = "    \"BSD-2-Clause-Patent\","]
+#[doc = "    \"BSD-2-Clause-Views\","]
+#[doc = "    \"BSD-3-Clause\","]
+#[doc = "    \"BSD-3-Clause-Attribution\","]
+#[doc = "    \"BSD-3-Clause-Clear\","]
+#[doc = "    \"BSD-3-Clause-LBNL\","]
+#[doc = "    \"BSD-3-Clause-Modification\","]
+#[doc = "    \"BSD-3-Clause-No-Military-License\","]
+#[doc = "    \"BSD-3-Clause-No-Nuclear-License\","]
+#[doc = "    \"BSD-3-Clause-No-Nuclear-License-2014\","]
+#[doc = "    \"BSD-3-Clause-No-Nuclear-Warranty\","]
+#[doc = "    \"BSD-3-Clause-Open-MPI\","]
+#[doc = "    \"BSD-4-Clause\","]
+#[doc = "    \"BSD-4-Clause-Shortened\","]
+#[doc = "    \"BSD-4-Clause-UC\","]
+#[doc = "    \"BSD-4.3RENO\","]
+#[doc = "    \"BSD-4.3TAHOE\","]
+#[doc = "    \"BSD-Advertising-Acknowledgement\","]
+#[doc = "    \"BSD-Attribution-HPND-disclaimer\","]
+#[doc = "    \"BSD-Protection\","]
+#[doc = "    \"BSD-Source-Code\","]
+#[doc = "    \"BSL-1.0\","]
+#[doc = "    \"BUSL-1.1\","]
+#[doc = "    \"bzip2-1.0.5\","]
+#[doc = "    \"bzip2-1.0.6\","]
+#[doc = "    \"C-UDA-1.0\","]
+#[doc = "    \"CAL-1.0\","]
+#[doc = "    \"CAL-1.0-Combined-Work-Exception\","]
+#[doc = "    \"Caldera\","]
+#[doc = "    \"CATOSL-1.1\","]
+#[doc = "    \"CC-BY-1.0\","]
+#[doc = "    \"CC-BY-2.0\","]
+#[doc = "    \"CC-BY-2.5\","]
+#[doc = "    \"CC-BY-2.5-AU\","]
+#[doc = "    \"CC-BY-3.0\","]
+#[doc = "    \"CC-BY-3.0-AT\","]
+#[doc = "    \"CC-BY-3.0-DE\","]
+#[doc = "    \"CC-BY-3.0-IGO\","]
+#[doc = "    \"CC-BY-3.0-NL\","]
+#[doc = "    \"CC-BY-3.0-US\","]
+#[doc = "    \"CC-BY-4.0\","]
+#[doc = "    \"CC-BY-NC-1.0\","]
+#[doc = "    \"CC-BY-NC-2.0\","]
+#[doc = "    \"CC-BY-NC-2.5\","]
+#[doc = "    \"CC-BY-NC-3.0\","]
+#[doc = "    \"CC-BY-NC-3.0-DE\","]
+#[doc = "    \"CC-BY-NC-4.0\","]
+#[doc = "    \"CC-BY-NC-ND-1.0\","]
+#[doc = "    \"CC-BY-NC-ND-2.0\","]
+#[doc = "    \"CC-BY-NC-ND-2.5\","]
+#[doc = "    \"CC-BY-NC-ND-3.0\","]
+#[doc = "    \"CC-BY-NC-ND-3.0-DE\","]
+#[doc = "    \"CC-BY-NC-ND-3.0-IGO\","]
+#[doc = "    \"CC-BY-NC-ND-4.0\","]
+#[doc = "    \"CC-BY-NC-SA-1.0\","]
+#[doc = "    \"CC-BY-NC-SA-2.0\","]
+#[doc = "    \"CC-BY-NC-SA-2.0-DE\","]
+#[doc = "    \"CC-BY-NC-SA-2.0-FR\","]
+#[doc = "    \"CC-BY-NC-SA-2.0-UK\","]
+#[doc = "    \"CC-BY-NC-SA-2.5\","]
+#[doc = "    \"CC-BY-NC-SA-3.0\","]
+#[doc = "    \"CC-BY-NC-SA-3.0-DE\","]
+#[doc = "    \"CC-BY-NC-SA-3.0-IGO\","]
+#[doc = "    \"CC-BY-NC-SA-4.0\","]
+#[doc = "    \"CC-BY-ND-1.0\","]
+#[doc = "    \"CC-BY-ND-2.0\","]
+#[doc = "    \"CC-BY-ND-2.5\","]
+#[doc = "    \"CC-BY-ND-3.0\","]
+#[doc = "    \"CC-BY-ND-3.0-DE\","]
+#[doc = "    \"CC-BY-ND-4.0\","]
+#[doc = "    \"CC-BY-SA-1.0\","]
+#[doc = "    \"CC-BY-SA-2.0\","]
+#[doc = "    \"CC-BY-SA-2.0-UK\","]
+#[doc = "    \"CC-BY-SA-2.1-JP\","]
+#[doc = "    \"CC-BY-SA-2.5\","]
+#[doc = "    \"CC-BY-SA-3.0\","]
+#[doc = "    \"CC-BY-SA-3.0-AT\","]
+#[doc = "    \"CC-BY-SA-3.0-DE\","]
+#[doc = "    \"CC-BY-SA-3.0-IGO\","]
+#[doc = "    \"CC-BY-SA-4.0\","]
+#[doc = "    \"CC-PDDC\","]
+#[doc = "    \"CC0-1.0\","]
+#[doc = "    \"CDDL-1.0\","]
+#[doc = "    \"CDDL-1.1\","]
+#[doc = "    \"CDL-1.0\","]
+#[doc = "    \"CDLA-Permissive-1.0\","]
+#[doc = "    \"CDLA-Permissive-2.0\","]
+#[doc = "    \"CDLA-Sharing-1.0\","]
+#[doc = "    \"CECILL-1.0\","]
+#[doc = "    \"CECILL-1.1\","]
+#[doc = "    \"CECILL-2.0\","]
+#[doc = "    \"CECILL-2.1\","]
+#[doc = "    \"CECILL-B\","]
+#[doc = "    \"CECILL-C\","]
+#[doc = "    \"CERN-OHL-1.1\","]
+#[doc = "    \"CERN-OHL-1.2\","]
+#[doc = "    \"CERN-OHL-P-2.0\","]
+#[doc = "    \"CERN-OHL-S-2.0\","]
+#[doc = "    \"CERN-OHL-W-2.0\","]
+#[doc = "    \"CFITSIO\","]
+#[doc = "    \"checkmk\","]
+#[doc = "    \"ClArtistic\","]
+#[doc = "    \"Clips\","]
+#[doc = "    \"CMU-Mach\","]
+#[doc = "    \"CNRI-Jython\","]
+#[doc = "    \"CNRI-Python\","]
+#[doc = "    \"CNRI-Python-GPL-Compatible\","]
+#[doc = "    \"COIL-1.0\","]
+#[doc = "    \"Community-Spec-1.0\","]
+#[doc = "    \"Condor-1.1\","]
+#[doc = "    \"copyleft-next-0.3.0\","]
+#[doc = "    \"copyleft-next-0.3.1\","]
+#[doc = "    \"Cornell-Lossless-JPEG\","]
+#[doc = "    \"CPAL-1.0\","]
+#[doc = "    \"CPL-1.0\","]
+#[doc = "    \"CPOL-1.02\","]
+#[doc = "    \"Crossword\","]
+#[doc = "    \"CrystalStacker\","]
+#[doc = "    \"CUA-OPL-1.0\","]
+#[doc = "    \"Cube\","]
+#[doc = "    \"curl\","]
+#[doc = "    \"D-FSL-1.0\","]
+#[doc = "    \"diffmark\","]
+#[doc = "    \"DL-DE-BY-2.0\","]
+#[doc = "    \"DOC\","]
+#[doc = "    \"Dotseqn\","]
+#[doc = "    \"DRL-1.0\","]
+#[doc = "    \"DSDP\","]
+#[doc = "    \"dtoa\","]
+#[doc = "    \"dvipdfm\","]
+#[doc = "    \"ECL-1.0\","]
+#[doc = "    \"ECL-2.0\","]
+#[doc = "    \"eCos-2.0\","]
+#[doc = "    \"EFL-1.0\","]
+#[doc = "    \"EFL-2.0\","]
+#[doc = "    \"eGenix\","]
+#[doc = "    \"Elastic-2.0\","]
+#[doc = "    \"Entessa\","]
+#[doc = "    \"EPICS\","]
+#[doc = "    \"EPL-1.0\","]
+#[doc = "    \"EPL-2.0\","]
+#[doc = "    \"ErlPL-1.1\","]
+#[doc = "    \"etalab-2.0\","]
+#[doc = "    \"EUDatagrid\","]
+#[doc = "    \"EUPL-1.0\","]
+#[doc = "    \"EUPL-1.1\","]
+#[doc = "    \"EUPL-1.2\","]
+#[doc = "    \"Eurosym\","]
+#[doc = "    \"Fair\","]
+#[doc = "    \"FDK-AAC\","]
+#[doc = "    \"Frameworx-1.0\","]
+#[doc = "    \"FreeBSD-DOC\","]
+#[doc = "    \"FreeImage\","]
+#[doc = "    \"FSFAP\","]
+#[doc = "    \"FSFUL\","]
+#[doc = "    \"FSFULLR\","]
+#[doc = "    \"FSFULLRWD\","]
+#[doc = "    \"FTL\","]
+#[doc = "    \"GD\","]
+#[doc = "    \"GFDL-1.1\","]
+#[doc = "    \"GFDL-1.1-invariants-only\","]
+#[doc = "    \"GFDL-1.1-invariants-or-later\","]
+#[doc = "    \"GFDL-1.1-no-invariants-only\","]
+#[doc = "    \"GFDL-1.1-no-invariants-or-later\","]
+#[doc = "    \"GFDL-1.1-only\","]
+#[doc = "    \"GFDL-1.1-or-later\","]
+#[doc = "    \"GFDL-1.2\","]
+#[doc = "    \"GFDL-1.2-invariants-only\","]
+#[doc = "    \"GFDL-1.2-invariants-or-later\","]
+#[doc = "    \"GFDL-1.2-no-invariants-only\","]
+#[doc = "    \"GFDL-1.2-no-invariants-or-later\","]
+#[doc = "    \"GFDL-1.2-only\","]
+#[doc = "    \"GFDL-1.2-or-later\","]
+#[doc = "    \"GFDL-1.3\","]
+#[doc = "    \"GFDL-1.3-invariants-only\","]
+#[doc = "    \"GFDL-1.3-invariants-or-later\","]
+#[doc = "    \"GFDL-1.3-no-invariants-only\","]
+#[doc = "    \"GFDL-1.3-no-invariants-or-later\","]
+#[doc = "    \"GFDL-1.3-only\","]
+#[doc = "    \"GFDL-1.3-or-later\","]
+#[doc = "    \"Giftware\","]
+#[doc = "    \"GL2PS\","]
+#[doc = "    \"Glide\","]
+#[doc = "    \"Glulxe\","]
+#[doc = "    \"GLWTPL\","]
+#[doc = "    \"gnuplot\","]
+#[doc = "    \"GPL-1.0\","]
+#[doc = "    \"GPL-1.0+\","]
+#[doc = "    \"GPL-1.0-only\","]
+#[doc = "    \"GPL-1.0-or-later\","]
+#[doc = "    \"GPL-2.0\","]
+#[doc = "    \"GPL-2.0+\","]
+#[doc = "    \"GPL-2.0-only\","]
+#[doc = "    \"GPL-2.0-or-later\","]
+#[doc = "    \"GPL-2.0-with-autoconf-exception\","]
+#[doc = "    \"GPL-2.0-with-bison-exception\","]
+#[doc = "    \"GPL-2.0-with-classpath-exception\","]
+#[doc = "    \"GPL-2.0-with-font-exception\","]
+#[doc = "    \"GPL-2.0-with-GCC-exception\","]
+#[doc = "    \"GPL-3.0\","]
+#[doc = "    \"GPL-3.0+\","]
+#[doc = "    \"GPL-3.0-only\","]
+#[doc = "    \"GPL-3.0-or-later\","]
+#[doc = "    \"GPL-3.0-with-autoconf-exception\","]
+#[doc = "    \"GPL-3.0-with-GCC-exception\","]
+#[doc = "    \"Graphics-Gems\","]
+#[doc = "    \"gSOAP-1.3b\","]
+#[doc = "    \"HaskellReport\","]
+#[doc = "    \"Hippocratic-2.1\","]
+#[doc = "    \"HP-1986\","]
+#[doc = "    \"HPND\","]
+#[doc = "    \"HPND-export-US\","]
+#[doc = "    \"HPND-Markus-Kuhn\","]
+#[doc = "    \"HPND-sell-variant\","]
+#[doc = "    \"HPND-sell-variant-MIT-disclaimer\","]
+#[doc = "    \"HTMLTIDY\","]
+#[doc = "    \"IBM-pibs\","]
+#[doc = "    \"ICU\","]
+#[doc = "    \"IEC-Code-Components-EULA\","]
+#[doc = "    \"IJG\","]
+#[doc = "    \"IJG-short\","]
+#[doc = "    \"ImageMagick\","]
+#[doc = "    \"iMatix\","]
+#[doc = "    \"Imlib2\","]
+#[doc = "    \"Info-ZIP\","]
+#[doc = "    \"Inner-Net-2.0\","]
+#[doc = "    \"Intel\","]
+#[doc = "    \"Intel-ACPI\","]
+#[doc = "    \"Interbase-1.0\","]
+#[doc = "    \"IPA\","]
+#[doc = "    \"IPL-1.0\","]
+#[doc = "    \"ISC\","]
+#[doc = "    \"Jam\","]
+#[doc = "    \"JasPer-2.0\","]
+#[doc = "    \"JPL-image\","]
+#[doc = "    \"JPNIC\","]
+#[doc = "    \"JSON\","]
+#[doc = "    \"Kazlib\","]
+#[doc = "    \"Knuth-CTAN\","]
+#[doc = "    \"LAL-1.2\","]
+#[doc = "    \"LAL-1.3\","]
+#[doc = "    \"Latex2e\","]
+#[doc = "    \"Latex2e-translated-notice\","]
+#[doc = "    \"Leptonica\","]
+#[doc = "    \"LGPL-2.0\","]
+#[doc = "    \"LGPL-2.0+\","]
+#[doc = "    \"LGPL-2.0-only\","]
+#[doc = "    \"LGPL-2.0-or-later\","]
+#[doc = "    \"LGPL-2.1\","]
+#[doc = "    \"LGPL-2.1+\","]
+#[doc = "    \"LGPL-2.1-only\","]
+#[doc = "    \"LGPL-2.1-or-later\","]
+#[doc = "    \"LGPL-3.0\","]
+#[doc = "    \"LGPL-3.0+\","]
+#[doc = "    \"LGPL-3.0-only\","]
+#[doc = "    \"LGPL-3.0-or-later\","]
+#[doc = "    \"LGPLLR\","]
+#[doc = "    \"Libpng\","]
+#[doc = "    \"libpng-2.0\","]
+#[doc = "    \"libselinux-1.0\","]
+#[doc = "    \"libtiff\","]
+#[doc = "    \"libutil-David-Nugent\","]
+#[doc = "    \"LiLiQ-P-1.1\","]
+#[doc = "    \"LiLiQ-R-1.1\","]
+#[doc = "    \"LiLiQ-Rplus-1.1\","]
+#[doc = "    \"Linux-man-pages-1-para\","]
+#[doc = "    \"Linux-man-pages-copyleft\","]
+#[doc = "    \"Linux-man-pages-copyleft-2-para\","]
+#[doc = "    \"Linux-man-pages-copyleft-var\","]
+#[doc = "    \"Linux-OpenIB\","]
+#[doc = "    \"LOOP\","]
+#[doc = "    \"LPL-1.0\","]
+#[doc = "    \"LPL-1.02\","]
+#[doc = "    \"LPPL-1.0\","]
+#[doc = "    \"LPPL-1.1\","]
+#[doc = "    \"LPPL-1.2\","]
+#[doc = "    \"LPPL-1.3a\","]
+#[doc = "    \"LPPL-1.3c\","]
+#[doc = "    \"LZMA-SDK-9.11-to-9.20\","]
+#[doc = "    \"LZMA-SDK-9.22\","]
+#[doc = "    \"MakeIndex\","]
+#[doc = "    \"Martin-Birgmeier\","]
+#[doc = "    \"metamail\","]
+#[doc = "    \"Minpack\","]
+#[doc = "    \"MirOS\","]
+#[doc = "    \"MIT\","]
+#[doc = "    \"MIT-0\","]
+#[doc = "    \"MIT-advertising\","]
+#[doc = "    \"MIT-CMU\","]
+#[doc = "    \"MIT-enna\","]
+#[doc = "    \"MIT-feh\","]
+#[doc = "    \"MIT-Festival\","]
+#[doc = "    \"MIT-Modern-Variant\","]
+#[doc = "    \"MIT-open-group\","]
+#[doc = "    \"MIT-Wu\","]
+#[doc = "    \"MITNFA\","]
+#[doc = "    \"Motosoto\","]
+#[doc = "    \"mpi-permissive\","]
+#[doc = "    \"mpich2\","]
+#[doc = "    \"MPL-1.0\","]
+#[doc = "    \"MPL-1.1\","]
+#[doc = "    \"MPL-2.0\","]
+#[doc = "    \"MPL-2.0-no-copyleft-exception\","]
+#[doc = "    \"mplus\","]
+#[doc = "    \"MS-LPL\","]
+#[doc = "    \"MS-PL\","]
+#[doc = "    \"MS-RL\","]
+#[doc = "    \"MTLL\","]
+#[doc = "    \"MulanPSL-1.0\","]
+#[doc = "    \"MulanPSL-2.0\","]
+#[doc = "    \"Multics\","]
+#[doc = "    \"Mup\","]
+#[doc = "    \"NAIST-2003\","]
+#[doc = "    \"NASA-1.3\","]
+#[doc = "    \"Naumen\","]
+#[doc = "    \"NBPL-1.0\","]
+#[doc = "    \"NCGL-UK-2.0\","]
+#[doc = "    \"NCSA\","]
+#[doc = "    \"Net-SNMP\","]
+#[doc = "    \"NetCDF\","]
+#[doc = "    \"Newsletr\","]
+#[doc = "    \"NGPL\","]
+#[doc = "    \"NICTA-1.0\","]
+#[doc = "    \"NIST-PD\","]
+#[doc = "    \"NIST-PD-fallback\","]
+#[doc = "    \"NIST-Software\","]
+#[doc = "    \"NLOD-1.0\","]
+#[doc = "    \"NLOD-2.0\","]
+#[doc = "    \"NLPL\","]
+#[doc = "    \"Nokia\","]
+#[doc = "    \"NOSL\","]
+#[doc = "    \"Noweb\","]
+#[doc = "    \"NPL-1.0\","]
+#[doc = "    \"NPL-1.1\","]
+#[doc = "    \"NPOSL-3.0\","]
+#[doc = "    \"NRL\","]
+#[doc = "    \"NTP\","]
+#[doc = "    \"NTP-0\","]
+#[doc = "    \"Nunit\","]
+#[doc = "    \"O-UDA-1.0\","]
+#[doc = "    \"OCCT-PL\","]
+#[doc = "    \"OCLC-2.0\","]
+#[doc = "    \"ODbL-1.0\","]
+#[doc = "    \"ODC-By-1.0\","]
+#[doc = "    \"OFFIS\","]
+#[doc = "    \"OFL-1.0\","]
+#[doc = "    \"OFL-1.0-no-RFN\","]
+#[doc = "    \"OFL-1.0-RFN\","]
+#[doc = "    \"OFL-1.1\","]
+#[doc = "    \"OFL-1.1-no-RFN\","]
+#[doc = "    \"OFL-1.1-RFN\","]
+#[doc = "    \"OGC-1.0\","]
+#[doc = "    \"OGDL-Taiwan-1.0\","]
+#[doc = "    \"OGL-Canada-2.0\","]
+#[doc = "    \"OGL-UK-1.0\","]
+#[doc = "    \"OGL-UK-2.0\","]
+#[doc = "    \"OGL-UK-3.0\","]
+#[doc = "    \"OGTSL\","]
+#[doc = "    \"OLDAP-1.1\","]
+#[doc = "    \"OLDAP-1.2\","]
+#[doc = "    \"OLDAP-1.3\","]
+#[doc = "    \"OLDAP-1.4\","]
+#[doc = "    \"OLDAP-2.0\","]
+#[doc = "    \"OLDAP-2.0.1\","]
+#[doc = "    \"OLDAP-2.1\","]
+#[doc = "    \"OLDAP-2.2\","]
+#[doc = "    \"OLDAP-2.2.1\","]
+#[doc = "    \"OLDAP-2.2.2\","]
+#[doc = "    \"OLDAP-2.3\","]
+#[doc = "    \"OLDAP-2.4\","]
+#[doc = "    \"OLDAP-2.5\","]
+#[doc = "    \"OLDAP-2.6\","]
+#[doc = "    \"OLDAP-2.7\","]
+#[doc = "    \"OLDAP-2.8\","]
+#[doc = "    \"OLFL-1.3\","]
+#[doc = "    \"OML\","]
+#[doc = "    \"OpenPBS-2.3\","]
+#[doc = "    \"OpenSSL\","]
+#[doc = "    \"OPL-1.0\","]
+#[doc = "    \"OPL-UK-3.0\","]
+#[doc = "    \"OPUBL-1.0\","]
+#[doc = "    \"OSET-PL-2.1\","]
+#[doc = "    \"OSL-1.0\","]
+#[doc = "    \"OSL-1.1\","]
+#[doc = "    \"OSL-2.0\","]
+#[doc = "    \"OSL-2.1\","]
+#[doc = "    \"OSL-3.0\","]
+#[doc = "    \"Parity-6.0.0\","]
+#[doc = "    \"Parity-7.0.0\","]
+#[doc = "    \"PDDL-1.0\","]
+#[doc = "    \"PHP-3.0\","]
+#[doc = "    \"PHP-3.01\","]
+#[doc = "    \"Plexus\","]
+#[doc = "    \"PolyForm-Noncommercial-1.0.0\","]
+#[doc = "    \"PolyForm-Small-Business-1.0.0\","]
+#[doc = "    \"PostgreSQL\","]
+#[doc = "    \"PSF-2.0\","]
+#[doc = "    \"psfrag\","]
+#[doc = "    \"psutils\","]
+#[doc = "    \"Python-2.0\","]
+#[doc = "    \"Python-2.0.1\","]
+#[doc = "    \"Qhull\","]
+#[doc = "    \"QPL-1.0\","]
+#[doc = "    \"QPL-1.0-INRIA-2004\","]
+#[doc = "    \"Rdisc\","]
+#[doc = "    \"RHeCos-1.1\","]
+#[doc = "    \"RPL-1.1\","]
+#[doc = "    \"RPL-1.5\","]
+#[doc = "    \"RPSL-1.0\","]
+#[doc = "    \"RSA-MD\","]
+#[doc = "    \"RSCPL\","]
+#[doc = "    \"Ruby\","]
+#[doc = "    \"SAX-PD\","]
+#[doc = "    \"Saxpath\","]
+#[doc = "    \"SCEA\","]
+#[doc = "    \"SchemeReport\","]
+#[doc = "    \"Sendmail\","]
+#[doc = "    \"Sendmail-8.23\","]
+#[doc = "    \"SGI-B-1.0\","]
+#[doc = "    \"SGI-B-1.1\","]
+#[doc = "    \"SGI-B-2.0\","]
+#[doc = "    \"SGP4\","]
+#[doc = "    \"SHL-0.5\","]
+#[doc = "    \"SHL-0.51\","]
+#[doc = "    \"SimPL-2.0\","]
+#[doc = "    \"SISSL\","]
+#[doc = "    \"SISSL-1.2\","]
+#[doc = "    \"Sleepycat\","]
+#[doc = "    \"SMLNJ\","]
+#[doc = "    \"SMPPL\","]
+#[doc = "    \"SNIA\","]
+#[doc = "    \"snprintf\","]
+#[doc = "    \"Spencer-86\","]
+#[doc = "    \"Spencer-94\","]
+#[doc = "    \"Spencer-99\","]
+#[doc = "    \"SPL-1.0\","]
+#[doc = "    \"SSH-OpenSSH\","]
+#[doc = "    \"SSH-short\","]
+#[doc = "    \"SSPL-1.0\","]
+#[doc = "    \"StandardML-NJ\","]
+#[doc = "    \"SugarCRM-1.1.3\","]
+#[doc = "    \"SunPro\","]
+#[doc = "    \"SWL\","]
+#[doc = "    \"Symlinks\","]
+#[doc = "    \"TAPR-OHL-1.0\","]
+#[doc = "    \"TCL\","]
+#[doc = "    \"TCP-wrappers\","]
+#[doc = "    \"TermReadKey\","]
+#[doc = "    \"TMate\","]
+#[doc = "    \"TORQUE-1.1\","]
+#[doc = "    \"TOSL\","]
+#[doc = "    \"TPDL\","]
+#[doc = "    \"TPL-1.0\","]
+#[doc = "    \"TTWL\","]
+#[doc = "    \"TU-Berlin-1.0\","]
+#[doc = "    \"TU-Berlin-2.0\","]
+#[doc = "    \"UCAR\","]
+#[doc = "    \"UCL-1.0\","]
+#[doc = "    \"Unicode-DFS-2015\","]
+#[doc = "    \"Unicode-DFS-2016\","]
+#[doc = "    \"Unicode-TOU\","]
+#[doc = "    \"UnixCrypt\","]
+#[doc = "    \"Unlicense\","]
+#[doc = "    \"UPL-1.0\","]
+#[doc = "    \"Vim\","]
+#[doc = "    \"VOSTROM\","]
+#[doc = "    \"VSL-1.0\","]
+#[doc = "    \"W3C\","]
+#[doc = "    \"W3C-19980720\","]
+#[doc = "    \"W3C-20150513\","]
+#[doc = "    \"w3m\","]
+#[doc = "    \"Watcom-1.0\","]
+#[doc = "    \"Widget-Workshop\","]
+#[doc = "    \"Wsuipa\","]
+#[doc = "    \"WTFPL\","]
+#[doc = "    \"wxWindows\","]
+#[doc = "    \"X11\","]
+#[doc = "    \"X11-distribute-modifications-variant\","]
+#[doc = "    \"Xdebug-1.03\","]
+#[doc = "    \"Xerox\","]
+#[doc = "    \"Xfig\","]
+#[doc = "    \"XFree86-1.1\","]
+#[doc = "    \"xinetd\","]
+#[doc = "    \"xlock\","]
+#[doc = "    \"Xnet\","]
+#[doc = "    \"xpp\","]
+#[doc = "    \"XSkat\","]
+#[doc = "    \"YPL-1.0\","]
+#[doc = "    \"YPL-1.1\","]
+#[doc = "    \"Zed\","]
+#[doc = "    \"Zend-2.0\","]
+#[doc = "    \"Zimbra-1.3\","]
+#[doc = "    \"Zimbra-1.4\","]
+#[doc = "    \"Zlib\","]
+#[doc = "    \"zlib-acknowledgement\","]
+#[doc = "    \"ZPL-1.1\","]
+#[doc = "    \"ZPL-2.0\","]
+#[doc = "    \"ZPL-2.1\""]
+#[doc = "  ]"]
+#[doc = "}"]
+#[doc = r" ```"]
+#[doc = r" </details>"]
+#[derive(
+    :: serde :: Deserialize,
+    :: serde :: Serialize,
+    Clone,
+    Copy,
+    Debug,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+)]
 pub enum SpdxLicenseIds {
     #[serde(rename = "0BSD")]
     _0bsd,
@@ -1522,8 +2985,6 @@ pub enum SpdxLicenseIds {
     CcBySa30Igo,
     #[serde(rename = "CC-BY-SA-4.0")]
     CcBySa40,
-    #[serde(rename = "CC-BY-SA-AR")]
-    CcBySaAr,
     #[serde(rename = "CC-PDDC")]
     CcPddc,
     #[serde(rename = "CC0-1.0")]
@@ -2016,8 +3477,6 @@ pub enum SpdxLicenseIds {
     OcctPl,
     #[serde(rename = "OCLC-2.0")]
     Oclc20,
-    #[serde(rename = "OdbL")]
-    ODbL,
     #[serde(rename = "ODbL-1.0")]
     ODbL10,
     #[serde(rename = "ODC-By-1.0")]
@@ -2306,585 +3765,583 @@ pub enum SpdxLicenseIds {
     #[serde(rename = "ZPL-2.0")]
     Zpl20,
     #[serde(rename = "ZPL-2.1")]
-    Zpl21,
+    Zpl21
 }
-impl From<&SpdxLicenseIds> for SpdxLicenseIds {
+impl ::std::convert::From<&Self> for SpdxLicenseIds {
     fn from(value: &SpdxLicenseIds) -> Self {
         value.clone()
     }
 }
-impl ToString for SpdxLicenseIds {
-    fn to_string(&self) -> String {
+impl ::std::fmt::Display for SpdxLicenseIds {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         match *self {
-            Self::_0bsd => "0BSD".to_string(),
-            Self::Aal => "AAL".to_string(),
-            Self::Abstyles => "Abstyles".to_string(),
-            Self::AdaCoreDoc => "AdaCore-doc".to_string(),
-            Self::Adobe2006 => "Adobe-2006".to_string(),
-            Self::AdobeGlyph => "Adobe-Glyph".to_string(),
-            Self::Adsl => "ADSL".to_string(),
-            Self::Afl11 => "AFL-1.1".to_string(),
-            Self::Afl12 => "AFL-1.2".to_string(),
-            Self::Afl20 => "AFL-2.0".to_string(),
-            Self::Afl21 => "AFL-2.1".to_string(),
-            Self::Afl30 => "AFL-3.0".to_string(),
-            Self::Afmparse => "Afmparse".to_string(),
-            Self::Agpl10 => "AGPL-1.0".to_string(),
-            Self::Agpl10Only => "AGPL-1.0-only".to_string(),
-            Self::Agpl10OrLater => "AGPL-1.0-or-later".to_string(),
-            Self::Agpl30 => "AGPL-3.0".to_string(),
-            Self::Agpl30Only => "AGPL-3.0-only".to_string(),
-            Self::Agpl30OrLater => "AGPL-3.0-or-later".to_string(),
-            Self::Aladdin => "Aladdin".to_string(),
-            Self::Amdplpa => "AMDPLPA".to_string(),
-            Self::Aml => "AML".to_string(),
-            Self::Ampas => "AMPAS".to_string(),
-            Self::AntlrPd => "ANTLR-PD".to_string(),
-            Self::AntlrPdFallback => "ANTLR-PD-fallback".to_string(),
-            Self::Apache10 => "Apache-1.0".to_string(),
-            Self::Apache11 => "Apache-1.1".to_string(),
-            Self::Apache20 => "Apache-2.0".to_string(),
-            Self::Apafml => "APAFML".to_string(),
-            Self::Apl10 => "APL-1.0".to_string(),
-            Self::AppS2p => "App-s2p".to_string(),
-            Self::Apsl10 => "APSL-1.0".to_string(),
-            Self::Apsl11 => "APSL-1.1".to_string(),
-            Self::Apsl12 => "APSL-1.2".to_string(),
-            Self::Apsl20 => "APSL-2.0".to_string(),
-            Self::Arphic1999 => "Arphic-1999".to_string(),
-            Self::Artistic10 => "Artistic-1.0".to_string(),
-            Self::Artistic10Cl8 => "Artistic-1.0-cl8".to_string(),
-            Self::Artistic10Perl => "Artistic-1.0-Perl".to_string(),
-            Self::Artistic20 => "Artistic-2.0".to_string(),
-            Self::AswfDigitalAssets10 => "ASWF-Digital-Assets-1.0".to_string(),
-            Self::AswfDigitalAssets11 => "ASWF-Digital-Assets-1.1".to_string(),
-            Self::Baekmuk => "Baekmuk".to_string(),
-            Self::Bahyph => "Bahyph".to_string(),
-            Self::Barr => "Barr".to_string(),
-            Self::Beerware => "Beerware".to_string(),
-            Self::BitstreamCharter => "Bitstream-Charter".to_string(),
-            Self::BitstreamVera => "Bitstream-Vera".to_string(),
-            Self::BitTorrent10 => "BitTorrent-1.0".to_string(),
-            Self::BitTorrent11 => "BitTorrent-1.1".to_string(),
-            Self::Blessing => "blessing".to_string(),
-            Self::BlueOak100 => "BlueOak-1.0.0".to_string(),
-            Self::BoehmGc => "Boehm-GC".to_string(),
-            Self::Borceux => "Borceux".to_string(),
-            Self::BrianGladman3Clause => "Brian-Gladman-3-Clause".to_string(),
-            Self::Bsd1Clause => "BSD-1-Clause".to_string(),
-            Self::Bsd2Clause => "BSD-2-Clause".to_string(),
-            Self::Bsd2ClauseFreeBsd => "BSD-2-Clause-FreeBSD".to_string(),
-            Self::Bsd2ClauseNetBsd => "BSD-2-Clause-NetBSD".to_string(),
-            Self::Bsd2ClausePatent => "BSD-2-Clause-Patent".to_string(),
-            Self::Bsd2ClauseViews => "BSD-2-Clause-Views".to_string(),
-            Self::Bsd3Clause => "BSD-3-Clause".to_string(),
-            Self::Bsd3ClauseAttribution => "BSD-3-Clause-Attribution".to_string(),
-            Self::Bsd3ClauseClear => "BSD-3-Clause-Clear".to_string(),
-            Self::Bsd3ClauseLbnl => "BSD-3-Clause-LBNL".to_string(),
-            Self::Bsd3ClauseModification => "BSD-3-Clause-Modification".to_string(),
-            Self::Bsd3ClauseNoMilitaryLicense => "BSD-3-Clause-No-Military-License".to_string(),
-            Self::Bsd3ClauseNoNuclearLicense => "BSD-3-Clause-No-Nuclear-License".to_string(),
+            Self::_0bsd => write!(f, "0BSD"),
+            Self::Aal => write!(f, "AAL"),
+            Self::Abstyles => write!(f, "Abstyles"),
+            Self::AdaCoreDoc => write!(f, "AdaCore-doc"),
+            Self::Adobe2006 => write!(f, "Adobe-2006"),
+            Self::AdobeGlyph => write!(f, "Adobe-Glyph"),
+            Self::Adsl => write!(f, "ADSL"),
+            Self::Afl11 => write!(f, "AFL-1.1"),
+            Self::Afl12 => write!(f, "AFL-1.2"),
+            Self::Afl20 => write!(f, "AFL-2.0"),
+            Self::Afl21 => write!(f, "AFL-2.1"),
+            Self::Afl30 => write!(f, "AFL-3.0"),
+            Self::Afmparse => write!(f, "Afmparse"),
+            Self::Agpl10 => write!(f, "AGPL-1.0"),
+            Self::Agpl10Only => write!(f, "AGPL-1.0-only"),
+            Self::Agpl10OrLater => write!(f, "AGPL-1.0-or-later"),
+            Self::Agpl30 => write!(f, "AGPL-3.0"),
+            Self::Agpl30Only => write!(f, "AGPL-3.0-only"),
+            Self::Agpl30OrLater => write!(f, "AGPL-3.0-or-later"),
+            Self::Aladdin => write!(f, "Aladdin"),
+            Self::Amdplpa => write!(f, "AMDPLPA"),
+            Self::Aml => write!(f, "AML"),
+            Self::Ampas => write!(f, "AMPAS"),
+            Self::AntlrPd => write!(f, "ANTLR-PD"),
+            Self::AntlrPdFallback => write!(f, "ANTLR-PD-fallback"),
+            Self::Apache10 => write!(f, "Apache-1.0"),
+            Self::Apache11 => write!(f, "Apache-1.1"),
+            Self::Apache20 => write!(f, "Apache-2.0"),
+            Self::Apafml => write!(f, "APAFML"),
+            Self::Apl10 => write!(f, "APL-1.0"),
+            Self::AppS2p => write!(f, "App-s2p"),
+            Self::Apsl10 => write!(f, "APSL-1.0"),
+            Self::Apsl11 => write!(f, "APSL-1.1"),
+            Self::Apsl12 => write!(f, "APSL-1.2"),
+            Self::Apsl20 => write!(f, "APSL-2.0"),
+            Self::Arphic1999 => write!(f, "Arphic-1999"),
+            Self::Artistic10 => write!(f, "Artistic-1.0"),
+            Self::Artistic10Cl8 => write!(f, "Artistic-1.0-cl8"),
+            Self::Artistic10Perl => write!(f, "Artistic-1.0-Perl"),
+            Self::Artistic20 => write!(f, "Artistic-2.0"),
+            Self::AswfDigitalAssets10 => write!(f, "ASWF-Digital-Assets-1.0"),
+            Self::AswfDigitalAssets11 => write!(f, "ASWF-Digital-Assets-1.1"),
+            Self::Baekmuk => write!(f, "Baekmuk"),
+            Self::Bahyph => write!(f, "Bahyph"),
+            Self::Barr => write!(f, "Barr"),
+            Self::Beerware => write!(f, "Beerware"),
+            Self::BitstreamCharter => write!(f, "Bitstream-Charter"),
+            Self::BitstreamVera => write!(f, "Bitstream-Vera"),
+            Self::BitTorrent10 => write!(f, "BitTorrent-1.0"),
+            Self::BitTorrent11 => write!(f, "BitTorrent-1.1"),
+            Self::Blessing => write!(f, "blessing"),
+            Self::BlueOak100 => write!(f, "BlueOak-1.0.0"),
+            Self::BoehmGc => write!(f, "Boehm-GC"),
+            Self::Borceux => write!(f, "Borceux"),
+            Self::BrianGladman3Clause => write!(f, "Brian-Gladman-3-Clause"),
+            Self::Bsd1Clause => write!(f, "BSD-1-Clause"),
+            Self::Bsd2Clause => write!(f, "BSD-2-Clause"),
+            Self::Bsd2ClauseFreeBsd => write!(f, "BSD-2-Clause-FreeBSD"),
+            Self::Bsd2ClauseNetBsd => write!(f, "BSD-2-Clause-NetBSD"),
+            Self::Bsd2ClausePatent => write!(f, "BSD-2-Clause-Patent"),
+            Self::Bsd2ClauseViews => write!(f, "BSD-2-Clause-Views"),
+            Self::Bsd3Clause => write!(f, "BSD-3-Clause"),
+            Self::Bsd3ClauseAttribution => write!(f, "BSD-3-Clause-Attribution"),
+            Self::Bsd3ClauseClear => write!(f, "BSD-3-Clause-Clear"),
+            Self::Bsd3ClauseLbnl => write!(f, "BSD-3-Clause-LBNL"),
+            Self::Bsd3ClauseModification => write!(f, "BSD-3-Clause-Modification"),
+            Self::Bsd3ClauseNoMilitaryLicense => write!(f, "BSD-3-Clause-No-Military-License"),
+            Self::Bsd3ClauseNoNuclearLicense => write!(f, "BSD-3-Clause-No-Nuclear-License"),
             Self::Bsd3ClauseNoNuclearLicense2014 => {
-                "BSD-3-Clause-No-Nuclear-License-2014".to_string()
+                write!(f, "BSD-3-Clause-No-Nuclear-License-2014")
             }
-            Self::Bsd3ClauseNoNuclearWarranty => "BSD-3-Clause-No-Nuclear-Warranty".to_string(),
-            Self::Bsd3ClauseOpenMpi => "BSD-3-Clause-Open-MPI".to_string(),
-            Self::Bsd4Clause => "BSD-4-Clause".to_string(),
-            Self::Bsd4ClauseShortened => "BSD-4-Clause-Shortened".to_string(),
-            Self::Bsd4ClauseUc => "BSD-4-Clause-UC".to_string(),
-            Self::Bsd43reno => "BSD-4.3RENO".to_string(),
-            Self::Bsd43tahoe => "BSD-4.3TAHOE".to_string(),
-            Self::BsdAdvertisingAcknowledgement => "BSD-Advertising-Acknowledgement".to_string(),
-            Self::BsdAttributionHpndDisclaimer => "BSD-Attribution-HPND-disclaimer".to_string(),
-            Self::BsdProtection => "BSD-Protection".to_string(),
-            Self::BsdSourceCode => "BSD-Source-Code".to_string(),
-            Self::Bsl10 => "BSL-1.0".to_string(),
-            Self::Busl11 => "BUSL-1.1".to_string(),
-            Self::Bzip2105 => "bzip2-1.0.5".to_string(),
-            Self::Bzip2106 => "bzip2-1.0.6".to_string(),
-            Self::CUda10 => "C-UDA-1.0".to_string(),
-            Self::Cal10 => "CAL-1.0".to_string(),
-            Self::Cal10CombinedWorkException => "CAL-1.0-Combined-Work-Exception".to_string(),
-            Self::Caldera => "Caldera".to_string(),
-            Self::Catosl11 => "CATOSL-1.1".to_string(),
-            Self::CcBy10 => "CC-BY-1.0".to_string(),
-            Self::CcBy20 => "CC-BY-2.0".to_string(),
-            Self::CcBy25 => "CC-BY-2.5".to_string(),
-            Self::CcBy25Au => "CC-BY-2.5-AU".to_string(),
-            Self::CcBy30 => "CC-BY-3.0".to_string(),
-            Self::CcBy30At => "CC-BY-3.0-AT".to_string(),
-            Self::CcBy30De => "CC-BY-3.0-DE".to_string(),
-            Self::CcBy30Igo => "CC-BY-3.0-IGO".to_string(),
-            Self::CcBy30Nl => "CC-BY-3.0-NL".to_string(),
-            Self::CcBy30Us => "CC-BY-3.0-US".to_string(),
-            Self::CcBy40 => "CC-BY-4.0".to_string(),
-            Self::CcByNc10 => "CC-BY-NC-1.0".to_string(),
-            Self::CcByNc20 => "CC-BY-NC-2.0".to_string(),
-            Self::CcByNc25 => "CC-BY-NC-2.5".to_string(),
-            Self::CcByNc30 => "CC-BY-NC-3.0".to_string(),
-            Self::CcByNc30De => "CC-BY-NC-3.0-DE".to_string(),
-            Self::CcByNc40 => "CC-BY-NC-4.0".to_string(),
-            Self::CcByNcNd10 => "CC-BY-NC-ND-1.0".to_string(),
-            Self::CcByNcNd20 => "CC-BY-NC-ND-2.0".to_string(),
-            Self::CcByNcNd25 => "CC-BY-NC-ND-2.5".to_string(),
-            Self::CcByNcNd30 => "CC-BY-NC-ND-3.0".to_string(),
-            Self::CcByNcNd30De => "CC-BY-NC-ND-3.0-DE".to_string(),
-            Self::CcByNcNd30Igo => "CC-BY-NC-ND-3.0-IGO".to_string(),
-            Self::CcByNcNd40 => "CC-BY-NC-ND-4.0".to_string(),
-            Self::CcByNcSa10 => "CC-BY-NC-SA-1.0".to_string(),
-            Self::CcByNcSa20 => "CC-BY-NC-SA-2.0".to_string(),
-            Self::CcByNcSa20De => "CC-BY-NC-SA-2.0-DE".to_string(),
-            Self::CcByNcSa20Fr => "CC-BY-NC-SA-2.0-FR".to_string(),
-            Self::CcByNcSa20Uk => "CC-BY-NC-SA-2.0-UK".to_string(),
-            Self::CcByNcSa25 => "CC-BY-NC-SA-2.5".to_string(),
-            Self::CcByNcSa30 => "CC-BY-NC-SA-3.0".to_string(),
-            Self::CcByNcSa30De => "CC-BY-NC-SA-3.0-DE".to_string(),
-            Self::CcByNcSa30Igo => "CC-BY-NC-SA-3.0-IGO".to_string(),
-            Self::CcByNcSa40 => "CC-BY-NC-SA-4.0".to_string(),
-            Self::CcByNd10 => "CC-BY-ND-1.0".to_string(),
-            Self::CcByNd20 => "CC-BY-ND-2.0".to_string(),
-            Self::CcByNd25 => "CC-BY-ND-2.5".to_string(),
-            Self::CcByNd30 => "CC-BY-ND-3.0".to_string(),
-            Self::CcByNd30De => "CC-BY-ND-3.0-DE".to_string(),
-            Self::CcByNd40 => "CC-BY-ND-4.0".to_string(),
-            Self::CcBySa10 => "CC-BY-SA-1.0".to_string(),
-            Self::CcBySa20 => "CC-BY-SA-2.0".to_string(),
-            Self::CcBySa20Uk => "CC-BY-SA-2.0-UK".to_string(),
-            Self::CcBySa21Jp => "CC-BY-SA-2.1-JP".to_string(),
-            Self::CcBySa25 => "CC-BY-SA-2.5".to_string(),
-            Self::CcBySa30 => "CC-BY-SA-3.0".to_string(),
-            Self::CcBySa30At => "CC-BY-SA-3.0-AT".to_string(),
-            Self::CcBySa30De => "CC-BY-SA-3.0-DE".to_string(),
-            Self::CcBySa30Igo => "CC-BY-SA-3.0-IGO".to_string(),
-            Self::CcBySa40 => "CC-BY-SA-4.0".to_string(),
-            Self::CcBySaAr => "CC-BY-SA-AR".to_string(),
-            Self::CcPddc => "CC-PDDC".to_string(),
-            Self::Cc010 => "CC0-1.0".to_string(),
-            Self::Cddl10 => "CDDL-1.0".to_string(),
-            Self::Cddl11 => "CDDL-1.1".to_string(),
-            Self::Cdl10 => "CDL-1.0".to_string(),
-            Self::CdlaPermissive10 => "CDLA-Permissive-1.0".to_string(),
-            Self::CdlaPermissive20 => "CDLA-Permissive-2.0".to_string(),
-            Self::CdlaSharing10 => "CDLA-Sharing-1.0".to_string(),
-            Self::Cecill10 => "CECILL-1.0".to_string(),
-            Self::Cecill11 => "CECILL-1.1".to_string(),
-            Self::Cecill20 => "CECILL-2.0".to_string(),
-            Self::Cecill21 => "CECILL-2.1".to_string(),
-            Self::CecillB => "CECILL-B".to_string(),
-            Self::CecillC => "CECILL-C".to_string(),
-            Self::CernOhl11 => "CERN-OHL-1.1".to_string(),
-            Self::CernOhl12 => "CERN-OHL-1.2".to_string(),
-            Self::CernOhlP20 => "CERN-OHL-P-2.0".to_string(),
-            Self::CernOhlS20 => "CERN-OHL-S-2.0".to_string(),
-            Self::CernOhlW20 => "CERN-OHL-W-2.0".to_string(),
-            Self::Cfitsio => "CFITSIO".to_string(),
-            Self::Checkmk => "checkmk".to_string(),
-            Self::ClArtistic => "ClArtistic".to_string(),
-            Self::Clips => "Clips".to_string(),
-            Self::CmuMach => "CMU-Mach".to_string(),
-            Self::CnriJython => "CNRI-Jython".to_string(),
-            Self::CnriPython => "CNRI-Python".to_string(),
-            Self::CnriPythonGplCompatible => "CNRI-Python-GPL-Compatible".to_string(),
-            Self::Coil10 => "COIL-1.0".to_string(),
-            Self::CommunitySpec10 => "Community-Spec-1.0".to_string(),
-            Self::Condor11 => "Condor-1.1".to_string(),
-            Self::CopyleftNext030 => "copyleft-next-0.3.0".to_string(),
-            Self::CopyleftNext031 => "copyleft-next-0.3.1".to_string(),
-            Self::CornellLosslessJpeg => "Cornell-Lossless-JPEG".to_string(),
-            Self::Cpal10 => "CPAL-1.0".to_string(),
-            Self::Cpl10 => "CPL-1.0".to_string(),
-            Self::Cpol102 => "CPOL-1.02".to_string(),
-            Self::Crossword => "Crossword".to_string(),
-            Self::CrystalStacker => "CrystalStacker".to_string(),
-            Self::CuaOpl10 => "CUA-OPL-1.0".to_string(),
-            Self::Cube => "Cube".to_string(),
-            Self::Curl => "curl".to_string(),
-            Self::DFsl10 => "D-FSL-1.0".to_string(),
-            Self::Diffmark => "diffmark".to_string(),
-            Self::DlDeBy20 => "DL-DE-BY-2.0".to_string(),
-            Self::Doc => "DOC".to_string(),
-            Self::Dotseqn => "Dotseqn".to_string(),
-            Self::Drl10 => "DRL-1.0".to_string(),
-            Self::Dsdp => "DSDP".to_string(),
-            Self::Dtoa => "dtoa".to_string(),
-            Self::Dvipdfm => "dvipdfm".to_string(),
-            Self::Ecl10 => "ECL-1.0".to_string(),
-            Self::Ecl20 => "ECL-2.0".to_string(),
-            Self::ECos20 => "eCos-2.0".to_string(),
-            Self::Efl10 => "EFL-1.0".to_string(),
-            Self::Efl20 => "EFL-2.0".to_string(),
-            Self::EGenix => "eGenix".to_string(),
-            Self::Elastic20 => "Elastic-2.0".to_string(),
-            Self::Entessa => "Entessa".to_string(),
-            Self::Epics => "EPICS".to_string(),
-            Self::Epl10 => "EPL-1.0".to_string(),
-            Self::Epl20 => "EPL-2.0".to_string(),
-            Self::ErlPl11 => "ErlPL-1.1".to_string(),
-            Self::Etalab20 => "etalab-2.0".to_string(),
-            Self::EuDatagrid => "EUDatagrid".to_string(),
-            Self::Eupl10 => "EUPL-1.0".to_string(),
-            Self::Eupl11 => "EUPL-1.1".to_string(),
-            Self::Eupl12 => "EUPL-1.2".to_string(),
-            Self::Eurosym => "Eurosym".to_string(),
-            Self::Fair => "Fair".to_string(),
-            Self::FdkAac => "FDK-AAC".to_string(),
-            Self::Frameworx10 => "Frameworx-1.0".to_string(),
-            Self::FreeBsdDoc => "FreeBSD-DOC".to_string(),
-            Self::FreeImage => "FreeImage".to_string(),
-            Self::Fsfap => "FSFAP".to_string(),
-            Self::Fsful => "FSFUL".to_string(),
-            Self::Fsfullr => "FSFULLR".to_string(),
-            Self::Fsfullrwd => "FSFULLRWD".to_string(),
-            Self::Ftl => "FTL".to_string(),
-            Self::Gd => "GD".to_string(),
-            Self::Gfdl11 => "GFDL-1.1".to_string(),
-            Self::Gfdl11InvariantsOnly => "GFDL-1.1-invariants-only".to_string(),
-            Self::Gfdl11InvariantsOrLater => "GFDL-1.1-invariants-or-later".to_string(),
-            Self::Gfdl11NoInvariantsOnly => "GFDL-1.1-no-invariants-only".to_string(),
-            Self::Gfdl11NoInvariantsOrLater => "GFDL-1.1-no-invariants-or-later".to_string(),
-            Self::Gfdl11Only => "GFDL-1.1-only".to_string(),
-            Self::Gfdl11OrLater => "GFDL-1.1-or-later".to_string(),
-            Self::Gfdl12 => "GFDL-1.2".to_string(),
-            Self::Gfdl12InvariantsOnly => "GFDL-1.2-invariants-only".to_string(),
-            Self::Gfdl12InvariantsOrLater => "GFDL-1.2-invariants-or-later".to_string(),
-            Self::Gfdl12NoInvariantsOnly => "GFDL-1.2-no-invariants-only".to_string(),
-            Self::Gfdl12NoInvariantsOrLater => "GFDL-1.2-no-invariants-or-later".to_string(),
-            Self::Gfdl12Only => "GFDL-1.2-only".to_string(),
-            Self::Gfdl12OrLater => "GFDL-1.2-or-later".to_string(),
-            Self::Gfdl13 => "GFDL-1.3".to_string(),
-            Self::Gfdl13InvariantsOnly => "GFDL-1.3-invariants-only".to_string(),
-            Self::Gfdl13InvariantsOrLater => "GFDL-1.3-invariants-or-later".to_string(),
-            Self::Gfdl13NoInvariantsOnly => "GFDL-1.3-no-invariants-only".to_string(),
-            Self::Gfdl13NoInvariantsOrLater => "GFDL-1.3-no-invariants-or-later".to_string(),
-            Self::Gfdl13Only => "GFDL-1.3-only".to_string(),
-            Self::Gfdl13OrLater => "GFDL-1.3-or-later".to_string(),
-            Self::Giftware => "Giftware".to_string(),
-            Self::Gl2ps => "GL2PS".to_string(),
-            Self::Glide => "Glide".to_string(),
-            Self::Glulxe => "Glulxe".to_string(),
-            Self::Glwtpl => "GLWTPL".to_string(),
-            Self::Gnuplot => "gnuplot".to_string(),
-            Self::Gpl10 => "GPL-1.0".to_string(),
-            Self::Gpl10Plus => "GPL-1.0+".to_string(),
-            Self::Gpl10Only => "GPL-1.0-only".to_string(),
-            Self::Gpl10OrLater => "GPL-1.0-or-later".to_string(),
-            Self::Gpl20 => "GPL-2.0".to_string(),
-            Self::Gpl20Plus => "GPL-2.0+".to_string(),
-            Self::Gpl20Only => "GPL-2.0-only".to_string(),
-            Self::Gpl20OrLater => "GPL-2.0-or-later".to_string(),
-            Self::Gpl20WithAutoconfException => "GPL-2.0-with-autoconf-exception".to_string(),
-            Self::Gpl20WithBisonException => "GPL-2.0-with-bison-exception".to_string(),
-            Self::Gpl20WithClasspathException => "GPL-2.0-with-classpath-exception".to_string(),
-            Self::Gpl20WithFontException => "GPL-2.0-with-font-exception".to_string(),
-            Self::Gpl20WithGccException => "GPL-2.0-with-GCC-exception".to_string(),
-            Self::Gpl30 => "GPL-3.0".to_string(),
-            Self::Gpl30Plus => "GPL-3.0+".to_string(),
-            Self::Gpl30Only => "GPL-3.0-only".to_string(),
-            Self::Gpl30OrLater => "GPL-3.0-or-later".to_string(),
-            Self::Gpl30WithAutoconfException => "GPL-3.0-with-autoconf-exception".to_string(),
-            Self::Gpl30WithGccException => "GPL-3.0-with-GCC-exception".to_string(),
-            Self::GraphicsGems => "Graphics-Gems".to_string(),
-            Self::GSoap13b => "gSOAP-1.3b".to_string(),
-            Self::HaskellReport => "HaskellReport".to_string(),
-            Self::Hippocratic21 => "Hippocratic-2.1".to_string(),
-            Self::Hp1986 => "HP-1986".to_string(),
-            Self::Hpnd => "HPND".to_string(),
-            Self::HpndExportUs => "HPND-export-US".to_string(),
-            Self::HpndMarkusKuhn => "HPND-Markus-Kuhn".to_string(),
-            Self::HpndSellVariant => "HPND-sell-variant".to_string(),
-            Self::HpndSellVariantMitDisclaimer => "HPND-sell-variant-MIT-disclaimer".to_string(),
-            Self::Htmltidy => "HTMLTIDY".to_string(),
-            Self::IbmPibs => "IBM-pibs".to_string(),
-            Self::Icu => "ICU".to_string(),
-            Self::IecCodeComponentsEula => "IEC-Code-Components-EULA".to_string(),
-            Self::Ijg => "IJG".to_string(),
-            Self::IjgShort => "IJG-short".to_string(),
-            Self::ImageMagick => "ImageMagick".to_string(),
-            Self::IMatix => "iMatix".to_string(),
-            Self::Imlib2 => "Imlib2".to_string(),
-            Self::InfoZip => "Info-ZIP".to_string(),
-            Self::InnerNet20 => "Inner-Net-2.0".to_string(),
-            Self::Intel => "Intel".to_string(),
-            Self::IntelAcpi => "Intel-ACPI".to_string(),
-            Self::Interbase10 => "Interbase-1.0".to_string(),
-            Self::Ipa => "IPA".to_string(),
-            Self::Ipl10 => "IPL-1.0".to_string(),
-            Self::Isc => "ISC".to_string(),
-            Self::Jam => "Jam".to_string(),
-            Self::JasPer20 => "JasPer-2.0".to_string(),
-            Self::JplImage => "JPL-image".to_string(),
-            Self::Jpnic => "JPNIC".to_string(),
-            Self::Json => "JSON".to_string(),
-            Self::Kazlib => "Kazlib".to_string(),
-            Self::KnuthCtan => "Knuth-CTAN".to_string(),
-            Self::Lal12 => "LAL-1.2".to_string(),
-            Self::Lal13 => "LAL-1.3".to_string(),
-            Self::Latex2e => "Latex2e".to_string(),
-            Self::Latex2eTranslatedNotice => "Latex2e-translated-notice".to_string(),
-            Self::Leptonica => "Leptonica".to_string(),
-            Self::Lgpl20 => "LGPL-2.0".to_string(),
-            Self::Lgpl20Plus => "LGPL-2.0+".to_string(),
-            Self::Lgpl20Only => "LGPL-2.0-only".to_string(),
-            Self::Lgpl20OrLater => "LGPL-2.0-or-later".to_string(),
-            Self::Lgpl21 => "LGPL-2.1".to_string(),
-            Self::Lgpl21Plus => "LGPL-2.1+".to_string(),
-            Self::Lgpl21Only => "LGPL-2.1-only".to_string(),
-            Self::Lgpl21OrLater => "LGPL-2.1-or-later".to_string(),
-            Self::Lgpl30 => "LGPL-3.0".to_string(),
-            Self::Lgpl30Plus => "LGPL-3.0+".to_string(),
-            Self::Lgpl30Only => "LGPL-3.0-only".to_string(),
-            Self::Lgpl30OrLater => "LGPL-3.0-or-later".to_string(),
-            Self::Lgpllr => "LGPLLR".to_string(),
-            Self::Libpng => "Libpng".to_string(),
-            Self::Libpng20 => "libpng-2.0".to_string(),
-            Self::Libselinux10 => "libselinux-1.0".to_string(),
-            Self::Libtiff => "libtiff".to_string(),
-            Self::LibutilDavidNugent => "libutil-David-Nugent".to_string(),
-            Self::LiLiQP11 => "LiLiQ-P-1.1".to_string(),
-            Self::LiLiQR11 => "LiLiQ-R-1.1".to_string(),
-            Self::LiLiQRplus11 => "LiLiQ-Rplus-1.1".to_string(),
-            Self::LinuxManPages1Para => "Linux-man-pages-1-para".to_string(),
-            Self::LinuxManPagesCopyleft => "Linux-man-pages-copyleft".to_string(),
-            Self::LinuxManPagesCopyleft2Para => "Linux-man-pages-copyleft-2-para".to_string(),
-            Self::LinuxManPagesCopyleftVar => "Linux-man-pages-copyleft-var".to_string(),
-            Self::LinuxOpenIb => "Linux-OpenIB".to_string(),
-            Self::Loop => "LOOP".to_string(),
-            Self::Lpl10 => "LPL-1.0".to_string(),
-            Self::Lpl102 => "LPL-1.02".to_string(),
-            Self::Lppl10 => "LPPL-1.0".to_string(),
-            Self::Lppl11 => "LPPL-1.1".to_string(),
-            Self::Lppl12 => "LPPL-1.2".to_string(),
-            Self::Lppl13a => "LPPL-1.3a".to_string(),
-            Self::Lppl13c => "LPPL-1.3c".to_string(),
-            Self::LzmaSdk911To920 => "LZMA-SDK-9.11-to-9.20".to_string(),
-            Self::LzmaSdk922 => "LZMA-SDK-9.22".to_string(),
-            Self::MakeIndex => "MakeIndex".to_string(),
-            Self::MartinBirgmeier => "Martin-Birgmeier".to_string(),
-            Self::Metamail => "metamail".to_string(),
-            Self::Minpack => "Minpack".to_string(),
-            Self::MirOs => "MirOS".to_string(),
-            Self::Mit => "MIT".to_string(),
-            Self::Mit0 => "MIT-0".to_string(),
-            Self::MitAdvertising => "MIT-advertising".to_string(),
-            Self::MitCmu => "MIT-CMU".to_string(),
-            Self::MitEnna => "MIT-enna".to_string(),
-            Self::MitFeh => "MIT-feh".to_string(),
-            Self::MitFestival => "MIT-Festival".to_string(),
-            Self::MitModernVariant => "MIT-Modern-Variant".to_string(),
-            Self::MitOpenGroup => "MIT-open-group".to_string(),
-            Self::MitWu => "MIT-Wu".to_string(),
-            Self::Mitnfa => "MITNFA".to_string(),
-            Self::Motosoto => "Motosoto".to_string(),
-            Self::MpiPermissive => "mpi-permissive".to_string(),
-            Self::Mpich2 => "mpich2".to_string(),
-            Self::Mpl10 => "MPL-1.0".to_string(),
-            Self::Mpl11 => "MPL-1.1".to_string(),
-            Self::Mpl20 => "MPL-2.0".to_string(),
-            Self::Mpl20NoCopyleftException => "MPL-2.0-no-copyleft-exception".to_string(),
-            Self::Mplus => "mplus".to_string(),
-            Self::MsLpl => "MS-LPL".to_string(),
-            Self::MsPl => "MS-PL".to_string(),
-            Self::MsRl => "MS-RL".to_string(),
-            Self::Mtll => "MTLL".to_string(),
-            Self::MulanPsl10 => "MulanPSL-1.0".to_string(),
-            Self::MulanPsl20 => "MulanPSL-2.0".to_string(),
-            Self::Multics => "Multics".to_string(),
-            Self::Mup => "Mup".to_string(),
-            Self::Naist2003 => "NAIST-2003".to_string(),
-            Self::Nasa13 => "NASA-1.3".to_string(),
-            Self::Naumen => "Naumen".to_string(),
-            Self::Nbpl10 => "NBPL-1.0".to_string(),
-            Self::NcglUk20 => "NCGL-UK-2.0".to_string(),
-            Self::Ncsa => "NCSA".to_string(),
-            Self::NetSnmp => "Net-SNMP".to_string(),
-            Self::NetCdf => "NetCDF".to_string(),
-            Self::Newsletr => "Newsletr".to_string(),
-            Self::Ngpl => "NGPL".to_string(),
-            Self::Nicta10 => "NICTA-1.0".to_string(),
-            Self::NistPd => "NIST-PD".to_string(),
-            Self::NistPdFallback => "NIST-PD-fallback".to_string(),
-            Self::NistSoftware => "NIST-Software".to_string(),
-            Self::Nlod10 => "NLOD-1.0".to_string(),
-            Self::Nlod20 => "NLOD-2.0".to_string(),
-            Self::Nlpl => "NLPL".to_string(),
-            Self::Nokia => "Nokia".to_string(),
-            Self::Nosl => "NOSL".to_string(),
-            Self::Noweb => "Noweb".to_string(),
-            Self::Npl10 => "NPL-1.0".to_string(),
-            Self::Npl11 => "NPL-1.1".to_string(),
-            Self::Nposl30 => "NPOSL-3.0".to_string(),
-            Self::Nrl => "NRL".to_string(),
-            Self::Ntp => "NTP".to_string(),
-            Self::Ntp0 => "NTP-0".to_string(),
-            Self::Nunit => "Nunit".to_string(),
-            Self::OUda10 => "O-UDA-1.0".to_string(),
-            Self::OcctPl => "OCCT-PL".to_string(),
-            Self::Oclc20 => "OCLC-2.0".to_string(),
-            Self::ODbL => "ODbL".to_string(),
-            Self::ODbL10 => "ODbL-1.0".to_string(),
-            Self::OdcBy10 => "ODC-By-1.0".to_string(),
-            Self::Offis => "OFFIS".to_string(),
-            Self::Ofl10 => "OFL-1.0".to_string(),
-            Self::Ofl10NoRfn => "OFL-1.0-no-RFN".to_string(),
-            Self::Ofl10Rfn => "OFL-1.0-RFN".to_string(),
-            Self::Ofl11 => "OFL-1.1".to_string(),
-            Self::Ofl11NoRfn => "OFL-1.1-no-RFN".to_string(),
-            Self::Ofl11Rfn => "OFL-1.1-RFN".to_string(),
-            Self::Ogc10 => "OGC-1.0".to_string(),
-            Self::OgdlTaiwan10 => "OGDL-Taiwan-1.0".to_string(),
-            Self::OglCanada20 => "OGL-Canada-2.0".to_string(),
-            Self::OglUk10 => "OGL-UK-1.0".to_string(),
-            Self::OglUk20 => "OGL-UK-2.0".to_string(),
-            Self::OglUk30 => "OGL-UK-3.0".to_string(),
-            Self::Ogtsl => "OGTSL".to_string(),
-            Self::Oldap11 => "OLDAP-1.1".to_string(),
-            Self::Oldap12 => "OLDAP-1.2".to_string(),
-            Self::Oldap13 => "OLDAP-1.3".to_string(),
-            Self::Oldap14 => "OLDAP-1.4".to_string(),
-            Self::Oldap20 => "OLDAP-2.0".to_string(),
-            Self::Oldap201 => "OLDAP-2.0.1".to_string(),
-            Self::Oldap21 => "OLDAP-2.1".to_string(),
-            Self::Oldap22 => "OLDAP-2.2".to_string(),
-            Self::Oldap221 => "OLDAP-2.2.1".to_string(),
-            Self::Oldap222 => "OLDAP-2.2.2".to_string(),
-            Self::Oldap23 => "OLDAP-2.3".to_string(),
-            Self::Oldap24 => "OLDAP-2.4".to_string(),
-            Self::Oldap25 => "OLDAP-2.5".to_string(),
-            Self::Oldap26 => "OLDAP-2.6".to_string(),
-            Self::Oldap27 => "OLDAP-2.7".to_string(),
-            Self::Oldap28 => "OLDAP-2.8".to_string(),
-            Self::Olfl13 => "OLFL-1.3".to_string(),
-            Self::Oml => "OML".to_string(),
-            Self::OpenPbs23 => "OpenPBS-2.3".to_string(),
-            Self::OpenSsl => "OpenSSL".to_string(),
-            Self::Opl10 => "OPL-1.0".to_string(),
-            Self::OplUk30 => "OPL-UK-3.0".to_string(),
-            Self::Opubl10 => "OPUBL-1.0".to_string(),
-            Self::OsetPl21 => "OSET-PL-2.1".to_string(),
-            Self::Osl10 => "OSL-1.0".to_string(),
-            Self::Osl11 => "OSL-1.1".to_string(),
-            Self::Osl20 => "OSL-2.0".to_string(),
-            Self::Osl21 => "OSL-2.1".to_string(),
-            Self::Osl30 => "OSL-3.0".to_string(),
-            Self::Parity600 => "Parity-6.0.0".to_string(),
-            Self::Parity700 => "Parity-7.0.0".to_string(),
-            Self::Pddl10 => "PDDL-1.0".to_string(),
-            Self::Php30 => "PHP-3.0".to_string(),
-            Self::Php301 => "PHP-3.01".to_string(),
-            Self::Plexus => "Plexus".to_string(),
-            Self::PolyFormNoncommercial100 => "PolyForm-Noncommercial-1.0.0".to_string(),
-            Self::PolyFormSmallBusiness100 => "PolyForm-Small-Business-1.0.0".to_string(),
-            Self::PostgreSql => "PostgreSQL".to_string(),
-            Self::Psf20 => "PSF-2.0".to_string(),
-            Self::Psfrag => "psfrag".to_string(),
-            Self::Psutils => "psutils".to_string(),
-            Self::Python20 => "Python-2.0".to_string(),
-            Self::Python201 => "Python-2.0.1".to_string(),
-            Self::Qhull => "Qhull".to_string(),
-            Self::Qpl10 => "QPL-1.0".to_string(),
-            Self::Qpl10Inria2004 => "QPL-1.0-INRIA-2004".to_string(),
-            Self::Rdisc => "Rdisc".to_string(),
-            Self::RHeCos11 => "RHeCos-1.1".to_string(),
-            Self::Rpl11 => "RPL-1.1".to_string(),
-            Self::Rpl15 => "RPL-1.5".to_string(),
-            Self::Rpsl10 => "RPSL-1.0".to_string(),
-            Self::RsaMd => "RSA-MD".to_string(),
-            Self::Rscpl => "RSCPL".to_string(),
-            Self::Ruby => "Ruby".to_string(),
-            Self::SaxPd => "SAX-PD".to_string(),
-            Self::Saxpath => "Saxpath".to_string(),
-            Self::Scea => "SCEA".to_string(),
-            Self::SchemeReport => "SchemeReport".to_string(),
-            Self::Sendmail => "Sendmail".to_string(),
-            Self::Sendmail823 => "Sendmail-8.23".to_string(),
-            Self::SgiB10 => "SGI-B-1.0".to_string(),
-            Self::SgiB11 => "SGI-B-1.1".to_string(),
-            Self::SgiB20 => "SGI-B-2.0".to_string(),
-            Self::Sgp4 => "SGP4".to_string(),
-            Self::Shl05 => "SHL-0.5".to_string(),
-            Self::Shl051 => "SHL-0.51".to_string(),
-            Self::SimPl20 => "SimPL-2.0".to_string(),
-            Self::Sissl => "SISSL".to_string(),
-            Self::Sissl12 => "SISSL-1.2".to_string(),
-            Self::Sleepycat => "Sleepycat".to_string(),
-            Self::Smlnj => "SMLNJ".to_string(),
-            Self::Smppl => "SMPPL".to_string(),
-            Self::Snia => "SNIA".to_string(),
-            Self::Snprintf => "snprintf".to_string(),
-            Self::Spencer86 => "Spencer-86".to_string(),
-            Self::Spencer94 => "Spencer-94".to_string(),
-            Self::Spencer99 => "Spencer-99".to_string(),
-            Self::Spl10 => "SPL-1.0".to_string(),
-            Self::SshOpenSsh => "SSH-OpenSSH".to_string(),
-            Self::SshShort => "SSH-short".to_string(),
-            Self::Sspl10 => "SSPL-1.0".to_string(),
-            Self::StandardMlNj => "StandardML-NJ".to_string(),
-            Self::SugarCrm113 => "SugarCRM-1.1.3".to_string(),
-            Self::SunPro => "SunPro".to_string(),
-            Self::Swl => "SWL".to_string(),
-            Self::Symlinks => "Symlinks".to_string(),
-            Self::TaprOhl10 => "TAPR-OHL-1.0".to_string(),
-            Self::Tcl => "TCL".to_string(),
-            Self::TcpWrappers => "TCP-wrappers".to_string(),
-            Self::TermReadKey => "TermReadKey".to_string(),
-            Self::TMate => "TMate".to_string(),
-            Self::Torque11 => "TORQUE-1.1".to_string(),
-            Self::Tosl => "TOSL".to_string(),
-            Self::Tpdl => "TPDL".to_string(),
-            Self::Tpl10 => "TPL-1.0".to_string(),
-            Self::Ttwl => "TTWL".to_string(),
-            Self::TuBerlin10 => "TU-Berlin-1.0".to_string(),
-            Self::TuBerlin20 => "TU-Berlin-2.0".to_string(),
-            Self::Ucar => "UCAR".to_string(),
-            Self::Ucl10 => "UCL-1.0".to_string(),
-            Self::UnicodeDfs2015 => "Unicode-DFS-2015".to_string(),
-            Self::UnicodeDfs2016 => "Unicode-DFS-2016".to_string(),
-            Self::UnicodeTou => "Unicode-TOU".to_string(),
-            Self::UnixCrypt => "UnixCrypt".to_string(),
-            Self::Unlicense => "Unlicense".to_string(),
-            Self::Upl10 => "UPL-1.0".to_string(),
-            Self::Vim => "Vim".to_string(),
-            Self::Vostrom => "VOSTROM".to_string(),
-            Self::Vsl10 => "VSL-1.0".to_string(),
-            Self::W3c => "W3C".to_string(),
-            Self::W3c19980720 => "W3C-19980720".to_string(),
-            Self::W3c20150513 => "W3C-20150513".to_string(),
-            Self::W3m => "w3m".to_string(),
-            Self::Watcom10 => "Watcom-1.0".to_string(),
-            Self::WidgetWorkshop => "Widget-Workshop".to_string(),
-            Self::Wsuipa => "Wsuipa".to_string(),
-            Self::Wtfpl => "WTFPL".to_string(),
-            Self::WxWindows => "wxWindows".to_string(),
-            Self::X11 => "X11".to_string(),
+            Self::Bsd3ClauseNoNuclearWarranty => write!(f, "BSD-3-Clause-No-Nuclear-Warranty"),
+            Self::Bsd3ClauseOpenMpi => write!(f, "BSD-3-Clause-Open-MPI"),
+            Self::Bsd4Clause => write!(f, "BSD-4-Clause"),
+            Self::Bsd4ClauseShortened => write!(f, "BSD-4-Clause-Shortened"),
+            Self::Bsd4ClauseUc => write!(f, "BSD-4-Clause-UC"),
+            Self::Bsd43reno => write!(f, "BSD-4.3RENO"),
+            Self::Bsd43tahoe => write!(f, "BSD-4.3TAHOE"),
+            Self::BsdAdvertisingAcknowledgement => write!(f, "BSD-Advertising-Acknowledgement"),
+            Self::BsdAttributionHpndDisclaimer => write!(f, "BSD-Attribution-HPND-disclaimer"),
+            Self::BsdProtection => write!(f, "BSD-Protection"),
+            Self::BsdSourceCode => write!(f, "BSD-Source-Code"),
+            Self::Bsl10 => write!(f, "BSL-1.0"),
+            Self::Busl11 => write!(f, "BUSL-1.1"),
+            Self::Bzip2105 => write!(f, "bzip2-1.0.5"),
+            Self::Bzip2106 => write!(f, "bzip2-1.0.6"),
+            Self::CUda10 => write!(f, "C-UDA-1.0"),
+            Self::Cal10 => write!(f, "CAL-1.0"),
+            Self::Cal10CombinedWorkException => write!(f, "CAL-1.0-Combined-Work-Exception"),
+            Self::Caldera => write!(f, "Caldera"),
+            Self::Catosl11 => write!(f, "CATOSL-1.1"),
+            Self::CcBy10 => write!(f, "CC-BY-1.0"),
+            Self::CcBy20 => write!(f, "CC-BY-2.0"),
+            Self::CcBy25 => write!(f, "CC-BY-2.5"),
+            Self::CcBy25Au => write!(f, "CC-BY-2.5-AU"),
+            Self::CcBy30 => write!(f, "CC-BY-3.0"),
+            Self::CcBy30At => write!(f, "CC-BY-3.0-AT"),
+            Self::CcBy30De => write!(f, "CC-BY-3.0-DE"),
+            Self::CcBy30Igo => write!(f, "CC-BY-3.0-IGO"),
+            Self::CcBy30Nl => write!(f, "CC-BY-3.0-NL"),
+            Self::CcBy30Us => write!(f, "CC-BY-3.0-US"),
+            Self::CcBy40 => write!(f, "CC-BY-4.0"),
+            Self::CcByNc10 => write!(f, "CC-BY-NC-1.0"),
+            Self::CcByNc20 => write!(f, "CC-BY-NC-2.0"),
+            Self::CcByNc25 => write!(f, "CC-BY-NC-2.5"),
+            Self::CcByNc30 => write!(f, "CC-BY-NC-3.0"),
+            Self::CcByNc30De => write!(f, "CC-BY-NC-3.0-DE"),
+            Self::CcByNc40 => write!(f, "CC-BY-NC-4.0"),
+            Self::CcByNcNd10 => write!(f, "CC-BY-NC-ND-1.0"),
+            Self::CcByNcNd20 => write!(f, "CC-BY-NC-ND-2.0"),
+            Self::CcByNcNd25 => write!(f, "CC-BY-NC-ND-2.5"),
+            Self::CcByNcNd30 => write!(f, "CC-BY-NC-ND-3.0"),
+            Self::CcByNcNd30De => write!(f, "CC-BY-NC-ND-3.0-DE"),
+            Self::CcByNcNd30Igo => write!(f, "CC-BY-NC-ND-3.0-IGO"),
+            Self::CcByNcNd40 => write!(f, "CC-BY-NC-ND-4.0"),
+            Self::CcByNcSa10 => write!(f, "CC-BY-NC-SA-1.0"),
+            Self::CcByNcSa20 => write!(f, "CC-BY-NC-SA-2.0"),
+            Self::CcByNcSa20De => write!(f, "CC-BY-NC-SA-2.0-DE"),
+            Self::CcByNcSa20Fr => write!(f, "CC-BY-NC-SA-2.0-FR"),
+            Self::CcByNcSa20Uk => write!(f, "CC-BY-NC-SA-2.0-UK"),
+            Self::CcByNcSa25 => write!(f, "CC-BY-NC-SA-2.5"),
+            Self::CcByNcSa30 => write!(f, "CC-BY-NC-SA-3.0"),
+            Self::CcByNcSa30De => write!(f, "CC-BY-NC-SA-3.0-DE"),
+            Self::CcByNcSa30Igo => write!(f, "CC-BY-NC-SA-3.0-IGO"),
+            Self::CcByNcSa40 => write!(f, "CC-BY-NC-SA-4.0"),
+            Self::CcByNd10 => write!(f, "CC-BY-ND-1.0"),
+            Self::CcByNd20 => write!(f, "CC-BY-ND-2.0"),
+            Self::CcByNd25 => write!(f, "CC-BY-ND-2.5"),
+            Self::CcByNd30 => write!(f, "CC-BY-ND-3.0"),
+            Self::CcByNd30De => write!(f, "CC-BY-ND-3.0-DE"),
+            Self::CcByNd40 => write!(f, "CC-BY-ND-4.0"),
+            Self::CcBySa10 => write!(f, "CC-BY-SA-1.0"),
+            Self::CcBySa20 => write!(f, "CC-BY-SA-2.0"),
+            Self::CcBySa20Uk => write!(f, "CC-BY-SA-2.0-UK"),
+            Self::CcBySa21Jp => write!(f, "CC-BY-SA-2.1-JP"),
+            Self::CcBySa25 => write!(f, "CC-BY-SA-2.5"),
+            Self::CcBySa30 => write!(f, "CC-BY-SA-3.0"),
+            Self::CcBySa30At => write!(f, "CC-BY-SA-3.0-AT"),
+            Self::CcBySa30De => write!(f, "CC-BY-SA-3.0-DE"),
+            Self::CcBySa30Igo => write!(f, "CC-BY-SA-3.0-IGO"),
+            Self::CcBySa40 => write!(f, "CC-BY-SA-4.0"),
+            Self::CcPddc => write!(f, "CC-PDDC"),
+            Self::Cc010 => write!(f, "CC0-1.0"),
+            Self::Cddl10 => write!(f, "CDDL-1.0"),
+            Self::Cddl11 => write!(f, "CDDL-1.1"),
+            Self::Cdl10 => write!(f, "CDL-1.0"),
+            Self::CdlaPermissive10 => write!(f, "CDLA-Permissive-1.0"),
+            Self::CdlaPermissive20 => write!(f, "CDLA-Permissive-2.0"),
+            Self::CdlaSharing10 => write!(f, "CDLA-Sharing-1.0"),
+            Self::Cecill10 => write!(f, "CECILL-1.0"),
+            Self::Cecill11 => write!(f, "CECILL-1.1"),
+            Self::Cecill20 => write!(f, "CECILL-2.0"),
+            Self::Cecill21 => write!(f, "CECILL-2.1"),
+            Self::CecillB => write!(f, "CECILL-B"),
+            Self::CecillC => write!(f, "CECILL-C"),
+            Self::CernOhl11 => write!(f, "CERN-OHL-1.1"),
+            Self::CernOhl12 => write!(f, "CERN-OHL-1.2"),
+            Self::CernOhlP20 => write!(f, "CERN-OHL-P-2.0"),
+            Self::CernOhlS20 => write!(f, "CERN-OHL-S-2.0"),
+            Self::CernOhlW20 => write!(f, "CERN-OHL-W-2.0"),
+            Self::Cfitsio => write!(f, "CFITSIO"),
+            Self::Checkmk => write!(f, "checkmk"),
+            Self::ClArtistic => write!(f, "ClArtistic"),
+            Self::Clips => write!(f, "Clips"),
+            Self::CmuMach => write!(f, "CMU-Mach"),
+            Self::CnriJython => write!(f, "CNRI-Jython"),
+            Self::CnriPython => write!(f, "CNRI-Python"),
+            Self::CnriPythonGplCompatible => write!(f, "CNRI-Python-GPL-Compatible"),
+            Self::Coil10 => write!(f, "COIL-1.0"),
+            Self::CommunitySpec10 => write!(f, "Community-Spec-1.0"),
+            Self::Condor11 => write!(f, "Condor-1.1"),
+            Self::CopyleftNext030 => write!(f, "copyleft-next-0.3.0"),
+            Self::CopyleftNext031 => write!(f, "copyleft-next-0.3.1"),
+            Self::CornellLosslessJpeg => write!(f, "Cornell-Lossless-JPEG"),
+            Self::Cpal10 => write!(f, "CPAL-1.0"),
+            Self::Cpl10 => write!(f, "CPL-1.0"),
+            Self::Cpol102 => write!(f, "CPOL-1.02"),
+            Self::Crossword => write!(f, "Crossword"),
+            Self::CrystalStacker => write!(f, "CrystalStacker"),
+            Self::CuaOpl10 => write!(f, "CUA-OPL-1.0"),
+            Self::Cube => write!(f, "Cube"),
+            Self::Curl => write!(f, "curl"),
+            Self::DFsl10 => write!(f, "D-FSL-1.0"),
+            Self::Diffmark => write!(f, "diffmark"),
+            Self::DlDeBy20 => write!(f, "DL-DE-BY-2.0"),
+            Self::Doc => write!(f, "DOC"),
+            Self::Dotseqn => write!(f, "Dotseqn"),
+            Self::Drl10 => write!(f, "DRL-1.0"),
+            Self::Dsdp => write!(f, "DSDP"),
+            Self::Dtoa => write!(f, "dtoa"),
+            Self::Dvipdfm => write!(f, "dvipdfm"),
+            Self::Ecl10 => write!(f, "ECL-1.0"),
+            Self::Ecl20 => write!(f, "ECL-2.0"),
+            Self::ECos20 => write!(f, "eCos-2.0"),
+            Self::Efl10 => write!(f, "EFL-1.0"),
+            Self::Efl20 => write!(f, "EFL-2.0"),
+            Self::EGenix => write!(f, "eGenix"),
+            Self::Elastic20 => write!(f, "Elastic-2.0"),
+            Self::Entessa => write!(f, "Entessa"),
+            Self::Epics => write!(f, "EPICS"),
+            Self::Epl10 => write!(f, "EPL-1.0"),
+            Self::Epl20 => write!(f, "EPL-2.0"),
+            Self::ErlPl11 => write!(f, "ErlPL-1.1"),
+            Self::Etalab20 => write!(f, "etalab-2.0"),
+            Self::EuDatagrid => write!(f, "EUDatagrid"),
+            Self::Eupl10 => write!(f, "EUPL-1.0"),
+            Self::Eupl11 => write!(f, "EUPL-1.1"),
+            Self::Eupl12 => write!(f, "EUPL-1.2"),
+            Self::Eurosym => write!(f, "Eurosym"),
+            Self::Fair => write!(f, "Fair"),
+            Self::FdkAac => write!(f, "FDK-AAC"),
+            Self::Frameworx10 => write!(f, "Frameworx-1.0"),
+            Self::FreeBsdDoc => write!(f, "FreeBSD-DOC"),
+            Self::FreeImage => write!(f, "FreeImage"),
+            Self::Fsfap => write!(f, "FSFAP"),
+            Self::Fsful => write!(f, "FSFUL"),
+            Self::Fsfullr => write!(f, "FSFULLR"),
+            Self::Fsfullrwd => write!(f, "FSFULLRWD"),
+            Self::Ftl => write!(f, "FTL"),
+            Self::Gd => write!(f, "GD"),
+            Self::Gfdl11 => write!(f, "GFDL-1.1"),
+            Self::Gfdl11InvariantsOnly => write!(f, "GFDL-1.1-invariants-only"),
+            Self::Gfdl11InvariantsOrLater => write!(f, "GFDL-1.1-invariants-or-later"),
+            Self::Gfdl11NoInvariantsOnly => write!(f, "GFDL-1.1-no-invariants-only"),
+            Self::Gfdl11NoInvariantsOrLater => write!(f, "GFDL-1.1-no-invariants-or-later"),
+            Self::Gfdl11Only => write!(f, "GFDL-1.1-only"),
+            Self::Gfdl11OrLater => write!(f, "GFDL-1.1-or-later"),
+            Self::Gfdl12 => write!(f, "GFDL-1.2"),
+            Self::Gfdl12InvariantsOnly => write!(f, "GFDL-1.2-invariants-only"),
+            Self::Gfdl12InvariantsOrLater => write!(f, "GFDL-1.2-invariants-or-later"),
+            Self::Gfdl12NoInvariantsOnly => write!(f, "GFDL-1.2-no-invariants-only"),
+            Self::Gfdl12NoInvariantsOrLater => write!(f, "GFDL-1.2-no-invariants-or-later"),
+            Self::Gfdl12Only => write!(f, "GFDL-1.2-only"),
+            Self::Gfdl12OrLater => write!(f, "GFDL-1.2-or-later"),
+            Self::Gfdl13 => write!(f, "GFDL-1.3"),
+            Self::Gfdl13InvariantsOnly => write!(f, "GFDL-1.3-invariants-only"),
+            Self::Gfdl13InvariantsOrLater => write!(f, "GFDL-1.3-invariants-or-later"),
+            Self::Gfdl13NoInvariantsOnly => write!(f, "GFDL-1.3-no-invariants-only"),
+            Self::Gfdl13NoInvariantsOrLater => write!(f, "GFDL-1.3-no-invariants-or-later"),
+            Self::Gfdl13Only => write!(f, "GFDL-1.3-only"),
+            Self::Gfdl13OrLater => write!(f, "GFDL-1.3-or-later"),
+            Self::Giftware => write!(f, "Giftware"),
+            Self::Gl2ps => write!(f, "GL2PS"),
+            Self::Glide => write!(f, "Glide"),
+            Self::Glulxe => write!(f, "Glulxe"),
+            Self::Glwtpl => write!(f, "GLWTPL"),
+            Self::Gnuplot => write!(f, "gnuplot"),
+            Self::Gpl10 => write!(f, "GPL-1.0"),
+            Self::Gpl10Plus => write!(f, "GPL-1.0+"),
+            Self::Gpl10Only => write!(f, "GPL-1.0-only"),
+            Self::Gpl10OrLater => write!(f, "GPL-1.0-or-later"),
+            Self::Gpl20 => write!(f, "GPL-2.0"),
+            Self::Gpl20Plus => write!(f, "GPL-2.0+"),
+            Self::Gpl20Only => write!(f, "GPL-2.0-only"),
+            Self::Gpl20OrLater => write!(f, "GPL-2.0-or-later"),
+            Self::Gpl20WithAutoconfException => write!(f, "GPL-2.0-with-autoconf-exception"),
+            Self::Gpl20WithBisonException => write!(f, "GPL-2.0-with-bison-exception"),
+            Self::Gpl20WithClasspathException => write!(f, "GPL-2.0-with-classpath-exception"),
+            Self::Gpl20WithFontException => write!(f, "GPL-2.0-with-font-exception"),
+            Self::Gpl20WithGccException => write!(f, "GPL-2.0-with-GCC-exception"),
+            Self::Gpl30 => write!(f, "GPL-3.0"),
+            Self::Gpl30Plus => write!(f, "GPL-3.0+"),
+            Self::Gpl30Only => write!(f, "GPL-3.0-only"),
+            Self::Gpl30OrLater => write!(f, "GPL-3.0-or-later"),
+            Self::Gpl30WithAutoconfException => write!(f, "GPL-3.0-with-autoconf-exception"),
+            Self::Gpl30WithGccException => write!(f, "GPL-3.0-with-GCC-exception"),
+            Self::GraphicsGems => write!(f, "Graphics-Gems"),
+            Self::GSoap13b => write!(f, "gSOAP-1.3b"),
+            Self::HaskellReport => write!(f, "HaskellReport"),
+            Self::Hippocratic21 => write!(f, "Hippocratic-2.1"),
+            Self::Hp1986 => write!(f, "HP-1986"),
+            Self::Hpnd => write!(f, "HPND"),
+            Self::HpndExportUs => write!(f, "HPND-export-US"),
+            Self::HpndMarkusKuhn => write!(f, "HPND-Markus-Kuhn"),
+            Self::HpndSellVariant => write!(f, "HPND-sell-variant"),
+            Self::HpndSellVariantMitDisclaimer => write!(f, "HPND-sell-variant-MIT-disclaimer"),
+            Self::Htmltidy => write!(f, "HTMLTIDY"),
+            Self::IbmPibs => write!(f, "IBM-pibs"),
+            Self::Icu => write!(f, "ICU"),
+            Self::IecCodeComponentsEula => write!(f, "IEC-Code-Components-EULA"),
+            Self::Ijg => write!(f, "IJG"),
+            Self::IjgShort => write!(f, "IJG-short"),
+            Self::ImageMagick => write!(f, "ImageMagick"),
+            Self::IMatix => write!(f, "iMatix"),
+            Self::Imlib2 => write!(f, "Imlib2"),
+            Self::InfoZip => write!(f, "Info-ZIP"),
+            Self::InnerNet20 => write!(f, "Inner-Net-2.0"),
+            Self::Intel => write!(f, "Intel"),
+            Self::IntelAcpi => write!(f, "Intel-ACPI"),
+            Self::Interbase10 => write!(f, "Interbase-1.0"),
+            Self::Ipa => write!(f, "IPA"),
+            Self::Ipl10 => write!(f, "IPL-1.0"),
+            Self::Isc => write!(f, "ISC"),
+            Self::Jam => write!(f, "Jam"),
+            Self::JasPer20 => write!(f, "JasPer-2.0"),
+            Self::JplImage => write!(f, "JPL-image"),
+            Self::Jpnic => write!(f, "JPNIC"),
+            Self::Json => write!(f, "JSON"),
+            Self::Kazlib => write!(f, "Kazlib"),
+            Self::KnuthCtan => write!(f, "Knuth-CTAN"),
+            Self::Lal12 => write!(f, "LAL-1.2"),
+            Self::Lal13 => write!(f, "LAL-1.3"),
+            Self::Latex2e => write!(f, "Latex2e"),
+            Self::Latex2eTranslatedNotice => write!(f, "Latex2e-translated-notice"),
+            Self::Leptonica => write!(f, "Leptonica"),
+            Self::Lgpl20 => write!(f, "LGPL-2.0"),
+            Self::Lgpl20Plus => write!(f, "LGPL-2.0+"),
+            Self::Lgpl20Only => write!(f, "LGPL-2.0-only"),
+            Self::Lgpl20OrLater => write!(f, "LGPL-2.0-or-later"),
+            Self::Lgpl21 => write!(f, "LGPL-2.1"),
+            Self::Lgpl21Plus => write!(f, "LGPL-2.1+"),
+            Self::Lgpl21Only => write!(f, "LGPL-2.1-only"),
+            Self::Lgpl21OrLater => write!(f, "LGPL-2.1-or-later"),
+            Self::Lgpl30 => write!(f, "LGPL-3.0"),
+            Self::Lgpl30Plus => write!(f, "LGPL-3.0+"),
+            Self::Lgpl30Only => write!(f, "LGPL-3.0-only"),
+            Self::Lgpl30OrLater => write!(f, "LGPL-3.0-or-later"),
+            Self::Lgpllr => write!(f, "LGPLLR"),
+            Self::Libpng => write!(f, "Libpng"),
+            Self::Libpng20 => write!(f, "libpng-2.0"),
+            Self::Libselinux10 => write!(f, "libselinux-1.0"),
+            Self::Libtiff => write!(f, "libtiff"),
+            Self::LibutilDavidNugent => write!(f, "libutil-David-Nugent"),
+            Self::LiLiQP11 => write!(f, "LiLiQ-P-1.1"),
+            Self::LiLiQR11 => write!(f, "LiLiQ-R-1.1"),
+            Self::LiLiQRplus11 => write!(f, "LiLiQ-Rplus-1.1"),
+            Self::LinuxManPages1Para => write!(f, "Linux-man-pages-1-para"),
+            Self::LinuxManPagesCopyleft => write!(f, "Linux-man-pages-copyleft"),
+            Self::LinuxManPagesCopyleft2Para => write!(f, "Linux-man-pages-copyleft-2-para"),
+            Self::LinuxManPagesCopyleftVar => write!(f, "Linux-man-pages-copyleft-var"),
+            Self::LinuxOpenIb => write!(f, "Linux-OpenIB"),
+            Self::Loop => write!(f, "LOOP"),
+            Self::Lpl10 => write!(f, "LPL-1.0"),
+            Self::Lpl102 => write!(f, "LPL-1.02"),
+            Self::Lppl10 => write!(f, "LPPL-1.0"),
+            Self::Lppl11 => write!(f, "LPPL-1.1"),
+            Self::Lppl12 => write!(f, "LPPL-1.2"),
+            Self::Lppl13a => write!(f, "LPPL-1.3a"),
+            Self::Lppl13c => write!(f, "LPPL-1.3c"),
+            Self::LzmaSdk911To920 => write!(f, "LZMA-SDK-9.11-to-9.20"),
+            Self::LzmaSdk922 => write!(f, "LZMA-SDK-9.22"),
+            Self::MakeIndex => write!(f, "MakeIndex"),
+            Self::MartinBirgmeier => write!(f, "Martin-Birgmeier"),
+            Self::Metamail => write!(f, "metamail"),
+            Self::Minpack => write!(f, "Minpack"),
+            Self::MirOs => write!(f, "MirOS"),
+            Self::Mit => write!(f, "MIT"),
+            Self::Mit0 => write!(f, "MIT-0"),
+            Self::MitAdvertising => write!(f, "MIT-advertising"),
+            Self::MitCmu => write!(f, "MIT-CMU"),
+            Self::MitEnna => write!(f, "MIT-enna"),
+            Self::MitFeh => write!(f, "MIT-feh"),
+            Self::MitFestival => write!(f, "MIT-Festival"),
+            Self::MitModernVariant => write!(f, "MIT-Modern-Variant"),
+            Self::MitOpenGroup => write!(f, "MIT-open-group"),
+            Self::MitWu => write!(f, "MIT-Wu"),
+            Self::Mitnfa => write!(f, "MITNFA"),
+            Self::Motosoto => write!(f, "Motosoto"),
+            Self::MpiPermissive => write!(f, "mpi-permissive"),
+            Self::Mpich2 => write!(f, "mpich2"),
+            Self::Mpl10 => write!(f, "MPL-1.0"),
+            Self::Mpl11 => write!(f, "MPL-1.1"),
+            Self::Mpl20 => write!(f, "MPL-2.0"),
+            Self::Mpl20NoCopyleftException => write!(f, "MPL-2.0-no-copyleft-exception"),
+            Self::Mplus => write!(f, "mplus"),
+            Self::MsLpl => write!(f, "MS-LPL"),
+            Self::MsPl => write!(f, "MS-PL"),
+            Self::MsRl => write!(f, "MS-RL"),
+            Self::Mtll => write!(f, "MTLL"),
+            Self::MulanPsl10 => write!(f, "MulanPSL-1.0"),
+            Self::MulanPsl20 => write!(f, "MulanPSL-2.0"),
+            Self::Multics => write!(f, "Multics"),
+            Self::Mup => write!(f, "Mup"),
+            Self::Naist2003 => write!(f, "NAIST-2003"),
+            Self::Nasa13 => write!(f, "NASA-1.3"),
+            Self::Naumen => write!(f, "Naumen"),
+            Self::Nbpl10 => write!(f, "NBPL-1.0"),
+            Self::NcglUk20 => write!(f, "NCGL-UK-2.0"),
+            Self::Ncsa => write!(f, "NCSA"),
+            Self::NetSnmp => write!(f, "Net-SNMP"),
+            Self::NetCdf => write!(f, "NetCDF"),
+            Self::Newsletr => write!(f, "Newsletr"),
+            Self::Ngpl => write!(f, "NGPL"),
+            Self::Nicta10 => write!(f, "NICTA-1.0"),
+            Self::NistPd => write!(f, "NIST-PD"),
+            Self::NistPdFallback => write!(f, "NIST-PD-fallback"),
+            Self::NistSoftware => write!(f, "NIST-Software"),
+            Self::Nlod10 => write!(f, "NLOD-1.0"),
+            Self::Nlod20 => write!(f, "NLOD-2.0"),
+            Self::Nlpl => write!(f, "NLPL"),
+            Self::Nokia => write!(f, "Nokia"),
+            Self::Nosl => write!(f, "NOSL"),
+            Self::Noweb => write!(f, "Noweb"),
+            Self::Npl10 => write!(f, "NPL-1.0"),
+            Self::Npl11 => write!(f, "NPL-1.1"),
+            Self::Nposl30 => write!(f, "NPOSL-3.0"),
+            Self::Nrl => write!(f, "NRL"),
+            Self::Ntp => write!(f, "NTP"),
+            Self::Ntp0 => write!(f, "NTP-0"),
+            Self::Nunit => write!(f, "Nunit"),
+            Self::OUda10 => write!(f, "O-UDA-1.0"),
+            Self::OcctPl => write!(f, "OCCT-PL"),
+            Self::Oclc20 => write!(f, "OCLC-2.0"),
+            Self::ODbL10 => write!(f, "ODbL-1.0"),
+            Self::OdcBy10 => write!(f, "ODC-By-1.0"),
+            Self::Offis => write!(f, "OFFIS"),
+            Self::Ofl10 => write!(f, "OFL-1.0"),
+            Self::Ofl10NoRfn => write!(f, "OFL-1.0-no-RFN"),
+            Self::Ofl10Rfn => write!(f, "OFL-1.0-RFN"),
+            Self::Ofl11 => write!(f, "OFL-1.1"),
+            Self::Ofl11NoRfn => write!(f, "OFL-1.1-no-RFN"),
+            Self::Ofl11Rfn => write!(f, "OFL-1.1-RFN"),
+            Self::Ogc10 => write!(f, "OGC-1.0"),
+            Self::OgdlTaiwan10 => write!(f, "OGDL-Taiwan-1.0"),
+            Self::OglCanada20 => write!(f, "OGL-Canada-2.0"),
+            Self::OglUk10 => write!(f, "OGL-UK-1.0"),
+            Self::OglUk20 => write!(f, "OGL-UK-2.0"),
+            Self::OglUk30 => write!(f, "OGL-UK-3.0"),
+            Self::Ogtsl => write!(f, "OGTSL"),
+            Self::Oldap11 => write!(f, "OLDAP-1.1"),
+            Self::Oldap12 => write!(f, "OLDAP-1.2"),
+            Self::Oldap13 => write!(f, "OLDAP-1.3"),
+            Self::Oldap14 => write!(f, "OLDAP-1.4"),
+            Self::Oldap20 => write!(f, "OLDAP-2.0"),
+            Self::Oldap201 => write!(f, "OLDAP-2.0.1"),
+            Self::Oldap21 => write!(f, "OLDAP-2.1"),
+            Self::Oldap22 => write!(f, "OLDAP-2.2"),
+            Self::Oldap221 => write!(f, "OLDAP-2.2.1"),
+            Self::Oldap222 => write!(f, "OLDAP-2.2.2"),
+            Self::Oldap23 => write!(f, "OLDAP-2.3"),
+            Self::Oldap24 => write!(f, "OLDAP-2.4"),
+            Self::Oldap25 => write!(f, "OLDAP-2.5"),
+            Self::Oldap26 => write!(f, "OLDAP-2.6"),
+            Self::Oldap27 => write!(f, "OLDAP-2.7"),
+            Self::Oldap28 => write!(f, "OLDAP-2.8"),
+            Self::Olfl13 => write!(f, "OLFL-1.3"),
+            Self::Oml => write!(f, "OML"),
+            Self::OpenPbs23 => write!(f, "OpenPBS-2.3"),
+            Self::OpenSsl => write!(f, "OpenSSL"),
+            Self::Opl10 => write!(f, "OPL-1.0"),
+            Self::OplUk30 => write!(f, "OPL-UK-3.0"),
+            Self::Opubl10 => write!(f, "OPUBL-1.0"),
+            Self::OsetPl21 => write!(f, "OSET-PL-2.1"),
+            Self::Osl10 => write!(f, "OSL-1.0"),
+            Self::Osl11 => write!(f, "OSL-1.1"),
+            Self::Osl20 => write!(f, "OSL-2.0"),
+            Self::Osl21 => write!(f, "OSL-2.1"),
+            Self::Osl30 => write!(f, "OSL-3.0"),
+            Self::Parity600 => write!(f, "Parity-6.0.0"),
+            Self::Parity700 => write!(f, "Parity-7.0.0"),
+            Self::Pddl10 => write!(f, "PDDL-1.0"),
+            Self::Php30 => write!(f, "PHP-3.0"),
+            Self::Php301 => write!(f, "PHP-3.01"),
+            Self::Plexus => write!(f, "Plexus"),
+            Self::PolyFormNoncommercial100 => write!(f, "PolyForm-Noncommercial-1.0.0"),
+            Self::PolyFormSmallBusiness100 => write!(f, "PolyForm-Small-Business-1.0.0"),
+            Self::PostgreSql => write!(f, "PostgreSQL"),
+            Self::Psf20 => write!(f, "PSF-2.0"),
+            Self::Psfrag => write!(f, "psfrag"),
+            Self::Psutils => write!(f, "psutils"),
+            Self::Python20 => write!(f, "Python-2.0"),
+            Self::Python201 => write!(f, "Python-2.0.1"),
+            Self::Qhull => write!(f, "Qhull"),
+            Self::Qpl10 => write!(f, "QPL-1.0"),
+            Self::Qpl10Inria2004 => write!(f, "QPL-1.0-INRIA-2004"),
+            Self::Rdisc => write!(f, "Rdisc"),
+            Self::RHeCos11 => write!(f, "RHeCos-1.1"),
+            Self::Rpl11 => write!(f, "RPL-1.1"),
+            Self::Rpl15 => write!(f, "RPL-1.5"),
+            Self::Rpsl10 => write!(f, "RPSL-1.0"),
+            Self::RsaMd => write!(f, "RSA-MD"),
+            Self::Rscpl => write!(f, "RSCPL"),
+            Self::Ruby => write!(f, "Ruby"),
+            Self::SaxPd => write!(f, "SAX-PD"),
+            Self::Saxpath => write!(f, "Saxpath"),
+            Self::Scea => write!(f, "SCEA"),
+            Self::SchemeReport => write!(f, "SchemeReport"),
+            Self::Sendmail => write!(f, "Sendmail"),
+            Self::Sendmail823 => write!(f, "Sendmail-8.23"),
+            Self::SgiB10 => write!(f, "SGI-B-1.0"),
+            Self::SgiB11 => write!(f, "SGI-B-1.1"),
+            Self::SgiB20 => write!(f, "SGI-B-2.0"),
+            Self::Sgp4 => write!(f, "SGP4"),
+            Self::Shl05 => write!(f, "SHL-0.5"),
+            Self::Shl051 => write!(f, "SHL-0.51"),
+            Self::SimPl20 => write!(f, "SimPL-2.0"),
+            Self::Sissl => write!(f, "SISSL"),
+            Self::Sissl12 => write!(f, "SISSL-1.2"),
+            Self::Sleepycat => write!(f, "Sleepycat"),
+            Self::Smlnj => write!(f, "SMLNJ"),
+            Self::Smppl => write!(f, "SMPPL"),
+            Self::Snia => write!(f, "SNIA"),
+            Self::Snprintf => write!(f, "snprintf"),
+            Self::Spencer86 => write!(f, "Spencer-86"),
+            Self::Spencer94 => write!(f, "Spencer-94"),
+            Self::Spencer99 => write!(f, "Spencer-99"),
+            Self::Spl10 => write!(f, "SPL-1.0"),
+            Self::SshOpenSsh => write!(f, "SSH-OpenSSH"),
+            Self::SshShort => write!(f, "SSH-short"),
+            Self::Sspl10 => write!(f, "SSPL-1.0"),
+            Self::StandardMlNj => write!(f, "StandardML-NJ"),
+            Self::SugarCrm113 => write!(f, "SugarCRM-1.1.3"),
+            Self::SunPro => write!(f, "SunPro"),
+            Self::Swl => write!(f, "SWL"),
+            Self::Symlinks => write!(f, "Symlinks"),
+            Self::TaprOhl10 => write!(f, "TAPR-OHL-1.0"),
+            Self::Tcl => write!(f, "TCL"),
+            Self::TcpWrappers => write!(f, "TCP-wrappers"),
+            Self::TermReadKey => write!(f, "TermReadKey"),
+            Self::TMate => write!(f, "TMate"),
+            Self::Torque11 => write!(f, "TORQUE-1.1"),
+            Self::Tosl => write!(f, "TOSL"),
+            Self::Tpdl => write!(f, "TPDL"),
+            Self::Tpl10 => write!(f, "TPL-1.0"),
+            Self::Ttwl => write!(f, "TTWL"),
+            Self::TuBerlin10 => write!(f, "TU-Berlin-1.0"),
+            Self::TuBerlin20 => write!(f, "TU-Berlin-2.0"),
+            Self::Ucar => write!(f, "UCAR"),
+            Self::Ucl10 => write!(f, "UCL-1.0"),
+            Self::UnicodeDfs2015 => write!(f, "Unicode-DFS-2015"),
+            Self::UnicodeDfs2016 => write!(f, "Unicode-DFS-2016"),
+            Self::UnicodeTou => write!(f, "Unicode-TOU"),
+            Self::UnixCrypt => write!(f, "UnixCrypt"),
+            Self::Unlicense => write!(f, "Unlicense"),
+            Self::Upl10 => write!(f, "UPL-1.0"),
+            Self::Vim => write!(f, "Vim"),
+            Self::Vostrom => write!(f, "VOSTROM"),
+            Self::Vsl10 => write!(f, "VSL-1.0"),
+            Self::W3c => write!(f, "W3C"),
+            Self::W3c19980720 => write!(f, "W3C-19980720"),
+            Self::W3c20150513 => write!(f, "W3C-20150513"),
+            Self::W3m => write!(f, "w3m"),
+            Self::Watcom10 => write!(f, "Watcom-1.0"),
+            Self::WidgetWorkshop => write!(f, "Widget-Workshop"),
+            Self::Wsuipa => write!(f, "Wsuipa"),
+            Self::Wtfpl => write!(f, "WTFPL"),
+            Self::WxWindows => write!(f, "wxWindows"),
+            Self::X11 => write!(f, "X11"),
             Self::X11DistributeModificationsVariant => {
-                "X11-distribute-modifications-variant".to_string()
+                write!(f, "X11-distribute-modifications-variant")
             }
-            Self::Xdebug103 => "Xdebug-1.03".to_string(),
-            Self::Xerox => "Xerox".to_string(),
-            Self::Xfig => "Xfig".to_string(),
-            Self::XFree8611 => "XFree86-1.1".to_string(),
-            Self::Xinetd => "xinetd".to_string(),
-            Self::Xlock => "xlock".to_string(),
-            Self::Xnet => "Xnet".to_string(),
-            Self::Xpp => "xpp".to_string(),
-            Self::XSkat => "XSkat".to_string(),
-            Self::Ypl10 => "YPL-1.0".to_string(),
-            Self::Ypl11 => "YPL-1.1".to_string(),
-            Self::Zed => "Zed".to_string(),
-            Self::Zend20 => "Zend-2.0".to_string(),
-            Self::Zimbra13 => "Zimbra-1.3".to_string(),
-            Self::Zimbra14 => "Zimbra-1.4".to_string(),
-            Self::Zlib => "Zlib".to_string(),
-            Self::ZlibAcknowledgement => "zlib-acknowledgement".to_string(),
-            Self::Zpl11 => "ZPL-1.1".to_string(),
-            Self::Zpl20 => "ZPL-2.0".to_string(),
-            Self::Zpl21 => "ZPL-2.1".to_string(),
+            Self::Xdebug103 => write!(f, "Xdebug-1.03"),
+            Self::Xerox => write!(f, "Xerox"),
+            Self::Xfig => write!(f, "Xfig"),
+            Self::XFree8611 => write!(f, "XFree86-1.1"),
+            Self::Xinetd => write!(f, "xinetd"),
+            Self::Xlock => write!(f, "xlock"),
+            Self::Xnet => write!(f, "Xnet"),
+            Self::Xpp => write!(f, "xpp"),
+            Self::XSkat => write!(f, "XSkat"),
+            Self::Ypl10 => write!(f, "YPL-1.0"),
+            Self::Ypl11 => write!(f, "YPL-1.1"),
+            Self::Zed => write!(f, "Zed"),
+            Self::Zend20 => write!(f, "Zend-2.0"),
+            Self::Zimbra13 => write!(f, "Zimbra-1.3"),
+            Self::Zimbra14 => write!(f, "Zimbra-1.4"),
+            Self::Zlib => write!(f, "Zlib"),
+            Self::ZlibAcknowledgement => write!(f, "zlib-acknowledgement"),
+            Self::Zpl11 => write!(f, "ZPL-1.1"),
+            Self::Zpl20 => write!(f, "ZPL-2.0"),
+            Self::Zpl21 => write!(f, "ZPL-2.1"),
         }
     }
 }
-impl std::str::FromStr for SpdxLicenseIds {
-    type Err = &'static str;
-    fn from_str(value: &str) -> Result<Self, &'static str> {
+impl ::std::str::FromStr for SpdxLicenseIds {
+    type Err = self::error::ConversionError;
+    fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         match value {
             "0BSD" => Ok(Self::_0bsd),
             "AAL" => Ok(Self::Aal),
@@ -3132,11 +4589,11 @@ impl std::str::FromStr for SpdxLicenseIds {
             "GLWTPL" => Ok(Self::Glwtpl),
             "gnuplot" => Ok(Self::Gnuplot),
             "GPL-1.0" => Ok(Self::Gpl10),
-            "GPL-1.0+" => Ok(Self::Gpl10Plus),
+            "GPL-1.0+" => Ok(Self::Gpl10),
             "GPL-1.0-only" => Ok(Self::Gpl10Only),
             "GPL-1.0-or-later" => Ok(Self::Gpl10OrLater),
             "GPL-2.0" => Ok(Self::Gpl20),
-            "GPL-2.0+" => Ok(Self::Gpl20Plus),
+            "GPL-2.0+" => Ok(Self::Gpl20),
             "GPL-2.0-only" => Ok(Self::Gpl20Only),
             "GPL-2.0-or-later" => Ok(Self::Gpl20OrLater),
             "GPL-2.0-with-autoconf-exception" => Ok(Self::Gpl20WithAutoconfException),
@@ -3145,7 +4602,7 @@ impl std::str::FromStr for SpdxLicenseIds {
             "GPL-2.0-with-font-exception" => Ok(Self::Gpl20WithFontException),
             "GPL-2.0-with-GCC-exception" => Ok(Self::Gpl20WithGccException),
             "GPL-3.0" => Ok(Self::Gpl30),
-            "GPL-3.0+" => Ok(Self::Gpl30Plus),
+            "GPL-3.0+" => Ok(Self::Gpl30),
             "GPL-3.0-only" => Ok(Self::Gpl30Only),
             "GPL-3.0-or-later" => Ok(Self::Gpl30OrLater),
             "GPL-3.0-with-autoconf-exception" => Ok(Self::Gpl30WithAutoconfException),
@@ -3190,11 +4647,11 @@ impl std::str::FromStr for SpdxLicenseIds {
             "Latex2e-translated-notice" => Ok(Self::Latex2eTranslatedNotice),
             "Leptonica" => Ok(Self::Leptonica),
             "LGPL-2.0" => Ok(Self::Lgpl20),
-            "LGPL-2.0+" => Ok(Self::Lgpl20Plus),
+            "LGPL-2.0+" => Ok(Self::Lgpl20),
             "LGPL-2.0-only" => Ok(Self::Lgpl20Only),
             "LGPL-2.0-or-later" => Ok(Self::Lgpl20OrLater),
             "LGPL-2.1" => Ok(Self::Lgpl21),
-            "LGPL-2.1+" => Ok(Self::Lgpl21Plus),
+            "LGPL-2.1+" => Ok(Self::Lgpl21),
             "LGPL-2.1-only" => Ok(Self::Lgpl21Only),
             "LGPL-2.1-or-later" => Ok(Self::Lgpl21OrLater),
             "LGPL-3.0" => Ok(Self::Lgpl30),
@@ -3287,7 +4744,6 @@ impl std::str::FromStr for SpdxLicenseIds {
             "O-UDA-1.0" => Ok(Self::OUda10),
             "OCCT-PL" => Ok(Self::OcctPl),
             "OCLC-2.0" => Ok(Self::Oclc20),
-            "ODbL" => Ok(Self::ODbL),
             "ODbL-1.0" => Ok(Self::ODbL10),
             "ODC-By-1.0" => Ok(Self::OdcBy10),
             "OFFIS" => Ok(Self::Offis),
@@ -3444,36 +4900,47 @@ impl std::str::FromStr for SpdxLicenseIds {
             "ZPL-1.1" => Ok(Self::Zpl11),
             "ZPL-2.0" => Ok(Self::Zpl20),
             "ZPL-2.1" => Ok(Self::Zpl21),
-            _ => Err("invalid value"),
+            _ => Err("invalid value".into()),
         }
     }
 }
-impl std::convert::TryFrom<&str> for SpdxLicenseIds {
-    type Error = &'static str;
-    fn try_from(value: &str) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&str> for SpdxLicenseIds {
+    type Error = self::error::ConversionError;
+    fn try_from(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<&String> for SpdxLicenseIds {
-    type Error = &'static str;
-    fn try_from(value: &String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<&String> for SpdxLicenseIds {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: &String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
-impl std::convert::TryFrom<String> for SpdxLicenseIds {
-    type Error = &'static str;
-    fn try_from(value: String) -> Result<Self, &'static str> {
+impl ::std::convert::TryFrom<String> for SpdxLicenseIds {
+    type Error = self::error::ConversionError;
+    fn try_from(
+        value: String,
+    ) -> ::std::result::Result<Self, self::error::ConversionError> {
         value.parse()
     }
 }
+#[doc = r" Types for composing complex structures."]
 pub mod builder {
     #[derive(Clone, Debug)]
     pub struct Authorization {
-        info_url: Result<Option<String>, String>,
-        param_name: Result<Option<String>, String>,
-        type_: Result<super::AuthorizationType, String>,
+        info_url: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
+        param_name: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
+        type_: ::std::result::Result<super::AuthorizationType, String>,
     }
-    impl Default for Authorization {
+    impl ::std::default::Default for Authorization {
         fn default() -> Self {
             Self {
                 info_url: Ok(Default::default()),
@@ -3485,8 +4952,8 @@ pub mod builder {
     impl Authorization {
         pub fn info_url<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.info_url = value
                 .try_into()
@@ -3495,8 +4962,8 @@ pub mod builder {
         }
         pub fn param_name<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.param_name = value
                 .try_into()
@@ -3505,8 +4972,8 @@ pub mod builder {
         }
         pub fn type_<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::AuthorizationType>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::AuthorizationType>,
+            T::Error: ::std::fmt::Display,
         {
             self.type_ = value
                 .try_into()
@@ -3514,9 +4981,11 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<Authorization> for super::Authorization {
-        type Error = String;
-        fn try_from(value: Authorization) -> Result<Self, String> {
+    impl ::std::convert::TryFrom<Authorization> for super::Authorization {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: Authorization,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 info_url: value.info_url?,
                 param_name: value.param_name?,
@@ -3524,7 +4993,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Authorization> for Authorization {
+    impl ::std::convert::From<super::Authorization> for Authorization {
         fn from(value: super::Authorization) -> Self {
             Self {
                 info_url: Ok(value.info_url),
@@ -3535,11 +5004,14 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct DistributedMobilityFeedRegistry {
-        feeds: Result<Vec<super::Feed>, String>,
-        license_spdx_identifier: Result<Option<super::SpdxLicenseIds>, String>,
-        operators: Result<Vec<super::Operator>, String>,
+        feeds: ::std::result::Result<::std::vec::Vec<super::Feed>, String>,
+        license_spdx_identifier: ::std::result::Result<
+            Option<super::SpdxLicenseIds>,
+            String,
+        >,
+        operators: ::std::result::Result<::std::vec::Vec<super::Operator>, String>,
     }
-    impl Default for DistributedMobilityFeedRegistry {
+    impl ::std::default::Default for DistributedMobilityFeedRegistry {
         fn default() -> Self {
             Self {
                 feeds: Ok(Default::default()),
@@ -3551,8 +5023,8 @@ pub mod builder {
     impl DistributedMobilityFeedRegistry {
         pub fn feeds<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::Feed>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::Feed>>,
+            T::Error: ::std::fmt::Display,
         {
             self.feeds = value
                 .try_into()
@@ -3561,8 +5033,8 @@ pub mod builder {
         }
         pub fn license_spdx_identifier<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::SpdxLicenseIds>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::SpdxLicenseIds>>,
+            T::Error: ::std::fmt::Display,
         {
             self.license_spdx_identifier = value.try_into().map_err(|e| {
                 format!(
@@ -3574,8 +5046,8 @@ pub mod builder {
         }
         pub fn operators<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::Operator>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::Operator>>,
+            T::Error: ::std::fmt::Display,
         {
             self.operators = value
                 .try_into()
@@ -3583,11 +5055,13 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<DistributedMobilityFeedRegistry>
+    impl ::std::convert::TryFrom<DistributedMobilityFeedRegistry>
         for super::DistributedMobilityFeedRegistry
     {
-        type Error = String;
-        fn try_from(value: DistributedMobilityFeedRegistry) -> Result<Self, String> {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: DistributedMobilityFeedRegistry,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 feeds: value.feeds?,
                 license_spdx_identifier: value.license_spdx_identifier?,
@@ -3595,7 +5069,9 @@ pub mod builder {
             })
         }
     }
-    impl From<super::DistributedMobilityFeedRegistry> for DistributedMobilityFeedRegistry {
+    impl ::std::convert::From<super::DistributedMobilityFeedRegistry>
+        for DistributedMobilityFeedRegistry
+    {
         fn from(value: super::DistributedMobilityFeedRegistry) -> Self {
             Self {
                 feeds: Ok(value.feeds),
@@ -3606,19 +5082,35 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct Feed {
-        authorization: Result<Option<super::Authorization>, String>,
-        description: Result<Option<String>, String>,
-        id: Result<String, String>,
-        languages: Result<Vec<super::Language>, String>,
-        license: Result<Option<super::LicenseDescription>, String>,
-        name: Result<Option<String>, String>,
-        operators: Result<Vec<super::Operator>, String>,
-        spec: Result<super::FeedSpec, String>,
-        supersedes_ids: Result<Vec<String>, String>,
-        tags: Result<serde_json::Map<String, serde_json::Value>, String>,
-        urls: Result<super::FeedUrls, String>,
+        authorization: ::std::result::Result<
+            Option<super::Authorization>,
+            String,
+        >,
+        description: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
+        id: ::std::result::Result<String, String>,
+        languages: ::std::result::Result<::std::vec::Vec<super::Language>, String>,
+        license: ::std::result::Result<
+            Option<super::LicenseDescription>,
+            String,
+        >,
+        name: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
+        operators: ::std::result::Result<::std::vec::Vec<super::Operator>, String>,
+        spec: ::std::result::Result<super::FeedSpec, String>,
+        supersedes_ids:
+            ::std::result::Result<::std::vec::Vec<String>, String>,
+        tags: ::std::result::Result<
+            ::serde_json::Map<String, ::serde_json::Value>,
+            String,
+        >,
+        urls: ::std::result::Result<super::FeedUrls, String>,
     }
-    impl Default for Feed {
+    impl ::std::default::Default for Feed {
         fn default() -> Self {
             Self {
                 authorization: Ok(Default::default()),
@@ -3638,8 +5130,8 @@ pub mod builder {
     impl Feed {
         pub fn authorization<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::Authorization>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::Authorization>>,
+            T::Error: ::std::fmt::Display,
         {
             self.authorization = value
                 .try_into()
@@ -3648,8 +5140,8 @@ pub mod builder {
         }
         pub fn description<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.description = value
                 .try_into()
@@ -3658,8 +5150,8 @@ pub mod builder {
         }
         pub fn id<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<String>,
+            T::Error: ::std::fmt::Display,
         {
             self.id = value
                 .try_into()
@@ -3668,8 +5160,8 @@ pub mod builder {
         }
         pub fn languages<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::Language>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::Language>>,
+            T::Error: ::std::fmt::Display,
         {
             self.languages = value
                 .try_into()
@@ -3678,8 +5170,8 @@ pub mod builder {
         }
         pub fn license<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::LicenseDescription>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::LicenseDescription>>,
+            T::Error: ::std::fmt::Display,
         {
             self.license = value
                 .try_into()
@@ -3688,8 +5180,8 @@ pub mod builder {
         }
         pub fn name<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.name = value
                 .try_into()
@@ -3698,8 +5190,8 @@ pub mod builder {
         }
         pub fn operators<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::Operator>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::Operator>>,
+            T::Error: ::std::fmt::Display,
         {
             self.operators = value
                 .try_into()
@@ -3708,8 +5200,8 @@ pub mod builder {
         }
         pub fn spec<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::FeedSpec>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::FeedSpec>,
+            T::Error: ::std::fmt::Display,
         {
             self.spec = value
                 .try_into()
@@ -3718,8 +5210,8 @@ pub mod builder {
         }
         pub fn supersedes_ids<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.supersedes_ids = value
                 .try_into()
@@ -3728,8 +5220,10 @@ pub mod builder {
         }
         pub fn tags<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<serde_json::Map<String, serde_json::Value>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                ::serde_json::Map<String, ::serde_json::Value>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.tags = value
                 .try_into()
@@ -3738,8 +5232,8 @@ pub mod builder {
         }
         pub fn urls<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<super::FeedUrls>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<super::FeedUrls>,
+            T::Error: ::std::fmt::Display,
         {
             self.urls = value
                 .try_into()
@@ -3747,9 +5241,9 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<Feed> for super::Feed {
-        type Error = String;
-        fn try_from(value: Feed) -> Result<Self, String> {
+    impl ::std::convert::TryFrom<Feed> for super::Feed {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Feed) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 authorization: value.authorization?,
                 description: value.description?,
@@ -3765,7 +5259,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Feed> for Feed {
+    impl ::std::convert::From<super::Feed> for Feed {
         fn from(value: super::Feed) -> Self {
             Self {
                 authorization: Ok(value.authorization),
@@ -3784,17 +5278,44 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct FeedUrls {
-        gbfs_auto_discovery: Result<Option<super::FeedUrlsGbfsAutoDiscovery>, String>,
-        mds_provider: Result<Option<super::FeedUrlsMdsProvider>, String>,
-        realtime_alerts: Result<Option<super::FeedUrlsRealtimeAlerts>, String>,
-        realtime_trip_updates: Result<Option<super::FeedUrlsRealtimeTripUpdates>, String>,
-        realtime_vehicle_positions: Result<Option<super::FeedUrlsRealtimeVehiclePositions>, String>,
-        static_current: Result<Option<super::FeedUrlsStaticCurrent>, String>,
-        static_historic: Result<Vec<super::FeedUrlsStaticHistoricItem>, String>,
-        static_hypothetical: Result<Vec<super::FeedUrlsStaticHypotheticalItem>, String>,
-        static_planned: Result<Vec<super::FeedUrlsStaticPlannedItem>, String>,
+        gbfs_auto_discovery: ::std::result::Result<
+            Option<super::FeedUrlsGbfsAutoDiscovery>,
+            String,
+        >,
+        mds_provider: ::std::result::Result<
+            Option<super::FeedUrlsMdsProvider>,
+            String,
+        >,
+        realtime_alerts: ::std::result::Result<
+            Option<super::FeedUrlsRealtimeAlerts>,
+            String,
+        >,
+        realtime_trip_updates: ::std::result::Result<
+            Option<super::FeedUrlsRealtimeTripUpdates>,
+            String,
+        >,
+        realtime_vehicle_positions: ::std::result::Result<
+            Option<super::FeedUrlsRealtimeVehiclePositions>,
+            String,
+        >,
+        static_current: ::std::result::Result<
+            Option<super::FeedUrlsStaticCurrent>,
+            String,
+        >,
+        static_historic: ::std::result::Result<
+            ::std::vec::Vec<super::FeedUrlsStaticHistoricItem>,
+            String,
+        >,
+        static_hypothetical: ::std::result::Result<
+            ::std::vec::Vec<super::FeedUrlsStaticHypotheticalItem>,
+            String,
+        >,
+        static_planned: ::std::result::Result<
+            ::std::vec::Vec<super::FeedUrlsStaticPlannedItem>,
+            String,
+        >,
     }
-    impl Default for FeedUrls {
+    impl ::std::default::Default for FeedUrls {
         fn default() -> Self {
             Self {
                 gbfs_auto_discovery: Ok(Default::default()),
@@ -3812,8 +5333,8 @@ pub mod builder {
     impl FeedUrls {
         pub fn gbfs_auto_discovery<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::FeedUrlsGbfsAutoDiscovery>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::FeedUrlsGbfsAutoDiscovery>>,
+            T::Error: ::std::fmt::Display,
         {
             self.gbfs_auto_discovery = value.try_into().map_err(|e| {
                 format!(
@@ -3825,8 +5346,8 @@ pub mod builder {
         }
         pub fn mds_provider<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::FeedUrlsMdsProvider>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::FeedUrlsMdsProvider>>,
+            T::Error: ::std::fmt::Display,
         {
             self.mds_provider = value
                 .try_into()
@@ -3835,8 +5356,8 @@ pub mod builder {
         }
         pub fn realtime_alerts<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::FeedUrlsRealtimeAlerts>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::FeedUrlsRealtimeAlerts>>,
+            T::Error: ::std::fmt::Display,
         {
             self.realtime_alerts = value
                 .try_into()
@@ -3845,8 +5366,8 @@ pub mod builder {
         }
         pub fn realtime_trip_updates<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::FeedUrlsRealtimeTripUpdates>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::FeedUrlsRealtimeTripUpdates>>,
+            T::Error: ::std::fmt::Display,
         {
             self.realtime_trip_updates = value.try_into().map_err(|e| {
                 format!(
@@ -3858,8 +5379,10 @@ pub mod builder {
         }
         pub fn realtime_vehicle_positions<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::FeedUrlsRealtimeVehiclePositions>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                Option<super::FeedUrlsRealtimeVehiclePositions>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.realtime_vehicle_positions = value.try_into().map_err(|e| {
                 format!(
@@ -3871,8 +5394,8 @@ pub mod builder {
         }
         pub fn static_current<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::FeedUrlsStaticCurrent>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::FeedUrlsStaticCurrent>>,
+            T::Error: ::std::fmt::Display,
         {
             self.static_current = value
                 .try_into()
@@ -3881,8 +5404,8 @@ pub mod builder {
         }
         pub fn static_historic<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::FeedUrlsStaticHistoricItem>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::FeedUrlsStaticHistoricItem>>,
+            T::Error: ::std::fmt::Display,
         {
             self.static_historic = value
                 .try_into()
@@ -3891,8 +5414,8 @@ pub mod builder {
         }
         pub fn static_hypothetical<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::FeedUrlsStaticHypotheticalItem>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::FeedUrlsStaticHypotheticalItem>>,
+            T::Error: ::std::fmt::Display,
         {
             self.static_hypothetical = value.try_into().map_err(|e| {
                 format!(
@@ -3904,8 +5427,8 @@ pub mod builder {
         }
         pub fn static_planned<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::FeedUrlsStaticPlannedItem>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::FeedUrlsStaticPlannedItem>>,
+            T::Error: ::std::fmt::Display,
         {
             self.static_planned = value
                 .try_into()
@@ -3913,9 +5436,9 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<FeedUrls> for super::FeedUrls {
-        type Error = String;
-        fn try_from(value: FeedUrls) -> Result<Self, String> {
+    impl ::std::convert::TryFrom<FeedUrls> for super::FeedUrls {
+        type Error = super::error::ConversionError;
+        fn try_from(value: FeedUrls) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 gbfs_auto_discovery: value.gbfs_auto_discovery?,
                 mds_provider: value.mds_provider?,
@@ -3929,7 +5452,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::FeedUrls> for FeedUrls {
+    impl ::std::convert::From<super::FeedUrls> for FeedUrls {
         fn from(value: super::FeedUrls) -> Self {
             Self {
                 gbfs_auto_discovery: Ok(value.gbfs_auto_discovery),
@@ -3946,21 +5469,44 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct LicenseDescription {
-        attribution_instructions: Result<Option<String>, String>,
-        attribution_text: Result<Option<String>, String>,
-        commercial_use_allowed:
-            Result<Option<super::LicenseDescriptionCommercialUseAllowed>, String>,
-        create_derived_product:
-            Result<Option<super::LicenseDescriptionCreateDerivedProduct>, String>,
-        redistribution_allowed:
-            Result<Option<super::LicenseDescriptionRedistributionAllowed>, String>,
-        share_alike_optional: Result<Option<super::LicenseDescriptionShareAlikeOptional>, String>,
-        spdx_identifier: Result<Option<super::SpdxLicenseIds>, String>,
-        url: Result<Option<String>, String>,
-        use_without_attribution:
-            Result<Option<super::LicenseDescriptionUseWithoutAttribution>, String>,
+        attribution_instructions: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
+        attribution_text: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
+        commercial_use_allowed: ::std::result::Result<
+            Option<super::LicenseDescriptionCommercialUseAllowed>,
+            String,
+        >,
+        create_derived_product: ::std::result::Result<
+            Option<super::LicenseDescriptionCreateDerivedProduct>,
+            String,
+        >,
+        redistribution_allowed: ::std::result::Result<
+            Option<super::LicenseDescriptionRedistributionAllowed>,
+            String,
+        >,
+        share_alike_optional: ::std::result::Result<
+            Option<super::LicenseDescriptionShareAlikeOptional>,
+            String,
+        >,
+        spdx_identifier: ::std::result::Result<
+            Option<super::SpdxLicenseIds>,
+            String,
+        >,
+        url: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
+        use_without_attribution: ::std::result::Result<
+            Option<super::LicenseDescriptionUseWithoutAttribution>,
+            String,
+        >,
     }
-    impl Default for LicenseDescription {
+    impl ::std::default::Default for LicenseDescription {
         fn default() -> Self {
             Self {
                 attribution_instructions: Ok(Default::default()),
@@ -3978,8 +5524,8 @@ pub mod builder {
     impl LicenseDescription {
         pub fn attribution_instructions<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.attribution_instructions = value.try_into().map_err(|e| {
                 format!(
@@ -3991,8 +5537,8 @@ pub mod builder {
         }
         pub fn attribution_text<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.attribution_text = value.try_into().map_err(|e| {
                 format!(
@@ -4004,8 +5550,10 @@ pub mod builder {
         }
         pub fn commercial_use_allowed<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::LicenseDescriptionCommercialUseAllowed>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                Option<super::LicenseDescriptionCommercialUseAllowed>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.commercial_use_allowed = value.try_into().map_err(|e| {
                 format!(
@@ -4017,8 +5565,10 @@ pub mod builder {
         }
         pub fn create_derived_product<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::LicenseDescriptionCreateDerivedProduct>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                Option<super::LicenseDescriptionCreateDerivedProduct>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.create_derived_product = value.try_into().map_err(|e| {
                 format!(
@@ -4030,8 +5580,10 @@ pub mod builder {
         }
         pub fn redistribution_allowed<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::LicenseDescriptionRedistributionAllowed>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                Option<super::LicenseDescriptionRedistributionAllowed>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.redistribution_allowed = value.try_into().map_err(|e| {
                 format!(
@@ -4043,8 +5595,10 @@ pub mod builder {
         }
         pub fn share_alike_optional<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::LicenseDescriptionShareAlikeOptional>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                Option<super::LicenseDescriptionShareAlikeOptional>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.share_alike_optional = value.try_into().map_err(|e| {
                 format!(
@@ -4056,8 +5610,8 @@ pub mod builder {
         }
         pub fn spdx_identifier<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::SpdxLicenseIds>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::SpdxLicenseIds>>,
+            T::Error: ::std::fmt::Display,
         {
             self.spdx_identifier = value
                 .try_into()
@@ -4066,8 +5620,8 @@ pub mod builder {
         }
         pub fn url<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.url = value
                 .try_into()
@@ -4076,8 +5630,10 @@ pub mod builder {
         }
         pub fn use_without_attribution<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::LicenseDescriptionUseWithoutAttribution>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                Option<super::LicenseDescriptionUseWithoutAttribution>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.use_without_attribution = value.try_into().map_err(|e| {
                 format!(
@@ -4088,9 +5644,11 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<LicenseDescription> for super::LicenseDescription {
-        type Error = String;
-        fn try_from(value: LicenseDescription) -> Result<Self, String> {
+    impl ::std::convert::TryFrom<LicenseDescription> for super::LicenseDescription {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: LicenseDescription,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 attribution_instructions: value.attribution_instructions?,
                 attribution_text: value.attribution_text?,
@@ -4104,7 +5662,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::LicenseDescription> for LicenseDescription {
+    impl ::std::convert::From<super::LicenseDescription> for LicenseDescription {
         fn from(value: super::LicenseDescription) -> Self {
             Self {
                 attribution_instructions: Ok(value.attribution_instructions),
@@ -4121,15 +5679,28 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct Operator {
-        associated_feeds: Result<Vec<super::OperatorAssociatedFeedsItem>, String>,
-        name: Result<String, String>,
-        onestop_id: Result<String, String>,
-        short_name: Result<Option<String>, String>,
-        supersedes_ids: Result<Vec<String>, String>,
-        tags: Result<serde_json::Map<String, serde_json::Value>, String>,
-        website: Result<Option<super::OperatorWebsite>, String>,
+        associated_feeds: ::std::result::Result<
+            ::std::vec::Vec<super::OperatorAssociatedFeedsItem>,
+            String,
+        >,
+        name: ::std::result::Result<String, String>,
+        onestop_id: ::std::result::Result<String, String>,
+        short_name: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
+        supersedes_ids:
+            ::std::result::Result<::std::vec::Vec<String>, String>,
+        tags: ::std::result::Result<
+            ::serde_json::Map<String, ::serde_json::Value>,
+            String,
+        >,
+        website: ::std::result::Result<
+            Option<super::OperatorWebsite>,
+            String,
+        >,
     }
-    impl Default for Operator {
+    impl ::std::default::Default for Operator {
         fn default() -> Self {
             Self {
                 associated_feeds: Ok(Default::default()),
@@ -4145,8 +5716,8 @@ pub mod builder {
     impl Operator {
         pub fn associated_feeds<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<super::OperatorAssociatedFeedsItem>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<super::OperatorAssociatedFeedsItem>>,
+            T::Error: ::std::fmt::Display,
         {
             self.associated_feeds = value.try_into().map_err(|e| {
                 format!(
@@ -4158,8 +5729,8 @@ pub mod builder {
         }
         pub fn name<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<String>,
+            T::Error: ::std::fmt::Display,
         {
             self.name = value
                 .try_into()
@@ -4168,8 +5739,8 @@ pub mod builder {
         }
         pub fn onestop_id<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<String>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<String>,
+            T::Error: ::std::fmt::Display,
         {
             self.onestop_id = value
                 .try_into()
@@ -4178,8 +5749,8 @@ pub mod builder {
         }
         pub fn short_name<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.short_name = value
                 .try_into()
@@ -4188,8 +5759,8 @@ pub mod builder {
         }
         pub fn supersedes_ids<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Vec<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<::std::vec::Vec<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.supersedes_ids = value
                 .try_into()
@@ -4198,8 +5769,10 @@ pub mod builder {
         }
         pub fn tags<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<serde_json::Map<String, serde_json::Value>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<
+                ::serde_json::Map<String, ::serde_json::Value>,
+            >,
+            T::Error: ::std::fmt::Display,
         {
             self.tags = value
                 .try_into()
@@ -4208,8 +5781,8 @@ pub mod builder {
         }
         pub fn website<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<super::OperatorWebsite>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<super::OperatorWebsite>>,
+            T::Error: ::std::fmt::Display,
         {
             self.website = value
                 .try_into()
@@ -4217,9 +5790,9 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<Operator> for super::Operator {
-        type Error = String;
-        fn try_from(value: Operator) -> Result<Self, String> {
+    impl ::std::convert::TryFrom<Operator> for super::Operator {
+        type Error = super::error::ConversionError;
+        fn try_from(value: Operator) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 associated_feeds: value.associated_feeds?,
                 name: value.name?,
@@ -4231,7 +5804,7 @@ pub mod builder {
             })
         }
     }
-    impl From<super::Operator> for Operator {
+    impl ::std::convert::From<super::Operator> for Operator {
         fn from(value: super::Operator) -> Self {
             Self {
                 associated_feeds: Ok(value.associated_feeds),
@@ -4246,10 +5819,16 @@ pub mod builder {
     }
     #[derive(Clone, Debug)]
     pub struct OperatorAssociatedFeedsItem {
-        feed_onestop_id: Result<Option<String>, String>,
-        gtfs_agency_id: Result<Option<String>, String>,
+        feed_onestop_id: ::std::result::Result<
+            Option<::serde_json::Value>,
+            String,
+        >,
+        gtfs_agency_id: ::std::result::Result<
+            Option<String>,
+            String,
+        >,
     }
-    impl Default for OperatorAssociatedFeedsItem {
+    impl ::std::default::Default for OperatorAssociatedFeedsItem {
         fn default() -> Self {
             Self {
                 feed_onestop_id: Ok(Default::default()),
@@ -4260,18 +5839,18 @@ pub mod builder {
     impl OperatorAssociatedFeedsItem {
         pub fn feed_onestop_id<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<::serde_json::Value>>,
+            T::Error: ::std::fmt::Display,
         {
-            self.gtfs_agency_id = value
+            self.feed_onestop_id = value
                 .try_into()
-                .map_err(|e| format!("error converting supplied value for gtfs_agency_id: {}", e));
+                .map_err(|e| format!("error converting supplied value for feed_onestop_id: {}", e));
             self
         }
         pub fn gtfs_agency_id<T>(mut self, value: T) -> Self
         where
-            T: std::convert::TryInto<Option<String>>,
-            T::Error: std::fmt::Display,
+            T: ::std::convert::TryInto<Option<String>>,
+            T::Error: ::std::fmt::Display,
         {
             self.gtfs_agency_id = value
                 .try_into()
@@ -4279,16 +5858,18 @@ pub mod builder {
             self
         }
     }
-    impl std::convert::TryFrom<OperatorAssociatedFeedsItem> for super::OperatorAssociatedFeedsItem {
-        type Error = String;
-        fn try_from(value: OperatorAssociatedFeedsItem) -> Result<Self, String> {
+    impl ::std::convert::TryFrom<OperatorAssociatedFeedsItem> for super::OperatorAssociatedFeedsItem {
+        type Error = super::error::ConversionError;
+        fn try_from(
+            value: OperatorAssociatedFeedsItem,
+        ) -> ::std::result::Result<Self, super::error::ConversionError> {
             Ok(Self {
                 feed_onestop_id: value.feed_onestop_id?,
                 gtfs_agency_id: value.gtfs_agency_id?,
             })
         }
     }
-    impl From<super::OperatorAssociatedFeedsItem> for OperatorAssociatedFeedsItem {
+    impl ::std::convert::From<super::OperatorAssociatedFeedsItem> for OperatorAssociatedFeedsItem {
         fn from(value: super::OperatorAssociatedFeedsItem) -> Self {
             Self {
                 feed_onestop_id: Ok(value.feed_onestop_id),
